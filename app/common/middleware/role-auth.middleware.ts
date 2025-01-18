@@ -3,7 +3,7 @@ import { type NextFunction, type Request, type Response } from "express";
 import expressAsyncHandler from "express-async-handler";
 import createHttpError from "http-errors";
 import process from "process";
-import { type IUser } from "../../user/user.dto";
+import { UserType, type IUser } from "../../user/user.dto";
 
 export const roleAuth = (roles: IUser["role"], publicRoutes: string[] = []) =>
   expressAsyncHandler(
@@ -23,7 +23,7 @@ export const roleAuth = (roles: IUser["role"], publicRoutes: string[] = []) =>
       const decodedUser = jwt.verify(token, process.env.JWT_SECRET!);
       req.user = decodedUser as IUser;
       const user = req.user as IUser;
-      if (user.role == null || ["ADMIN", "USER"].includes(user.role)) {
+      if (user.role == null || !Object.values(UserType).includes(user.role)) {
         throw createHttpError(401, { message: "Invalid user role" });
       }
       if (!roles.includes(user.role)) {

@@ -9,6 +9,7 @@ import { loadConfig } from "./app/common/helper/config.hepler";
 import { type IUser } from "./app/user/user.dto";
 import errorHandler from "./app/common/middleware/error-handler.middleware";
 import routes from "./app/routes";
+import { initSeeder } from "./app/common/services/seederInit.service";
 
 loadConfig();
 
@@ -36,6 +37,9 @@ const initApp = async (): Promise<void> => {
 
   // passport init
   initPassport();
+
+  // seeder init
+  await initSeeder();
 
   // set base path to /api
   app.use("/api", routes);

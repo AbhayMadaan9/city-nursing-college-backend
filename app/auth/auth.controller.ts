@@ -1,12 +1,37 @@
 import * as authService from "./auth.service";
+import * as userService from "../user/user.service";
 import { createResponse } from "../common/helper/response.hepler";
 import asyncHandler from "express-async-handler";
 import { type Request, type Response } from "express";
+import {
+  createUserTokens,
+  isValidPassword,
+} from "../common/services/passport-jwt.service";
+import { getLoginUser } from "../common/helper/util.helper";
 
-export const createAuth = asyncHandler(async (req: Request, res: Response) => {
-  const result = await authService.createAuth(req.body);
-  res.send(createResponse(result, "Auth created sucssefully"));
+export const loginAuth = asyncHandler(async (req: Request, res: Response) => {
+  if (!req.user) {
+    throw new Error("Invalid credentials");
+  }
+  res.send(
+    createResponse(
+      { ...createUserTokens(req.user) },
+      "Auth created sucssefully",
+    ),
+  );
 });
+
+export const resetPasswordAuth = asyncHandler(
+  async (req: Request, res: Response) => {
+    const user = getLoginUser(req.user);
+    const { confirmPassword } = req.body;
+
+    const result = await userService.updateUser(user._id, {
+      password: confirmPassword,
+    });
+    res.send(createResponse(result));
+  },
+);
 
 export const updateAuth = asyncHandler(async (req: Request, res: Response) => {
   const result = await authService.updateAuth(req.params.id, req.body);

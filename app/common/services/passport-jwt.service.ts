@@ -8,7 +8,10 @@ import * as userService from "../../user/user.service";
 import { type Request } from "express";
 import { type IUser } from "../../user/user.dto";
 
-const isValidPassword = async function (value: string, password: string) {
+export const isValidPassword = async function (
+  value: string,
+  password: string,
+) {
   const compare = await bcrypt.compare(value, password);
   return compare;
 };
@@ -35,12 +38,12 @@ export const initPassport = (): void => {
     "login",
     new LocalStrategy(
       {
-        usernameField: "username",
+        usernameField: "userName",
         passwordField: "password",
       },
-      async (username, password, done) => {
+      async (userName, password, done) => {
         try {
-          const user = await userService.getUserByUsername(username);
+          const user = await userService.getUserByUsername(userName);
           if (user == null) {
             done(createError(401, "User not found!"), false);
             return;
@@ -58,7 +61,7 @@ export const initPassport = (): void => {
 
           const validate = await isValidPassword(password, user.password);
           if (!validate) {
-            done(createError(401, "Invalid username or password"), false);
+            done(createError(401, "Invalid userName or password"), false);
             return;
           }
           const { password: _p, ...result } = user;
@@ -71,10 +74,11 @@ export const initPassport = (): void => {
   );
 };
 
-export const createUserTokens = (user: Omit<IUser, "password">) => {
+export const createUserTokens = (user: Partial<IUser>) => {
   const jwtSecret = process.env.JWT_SECRET ?? "";
-  const token = jwt.sign(user, jwtSecret);
-  return { accessToken: token, refreshToken: "" };
+  const expiresIn = process.env.ACCESS_TOKEN_EXPIRATION ?? "2";
+  const token = jwt.sign(user, jwtSecret, {expiresIn: 30});
+  return { accessToken: token };
 };
 
 export const decodeToken = (token: string) => {
