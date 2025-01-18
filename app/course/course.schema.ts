@@ -25,6 +25,7 @@ const CourseSchema = new Schema<ICourse>({
     name: { type: "string", required: true, unique: true },
     duration: { type: "number", required: true },
     fees: FeeStructureSchema,
+    isDeleted: { type: "boolean", default: false },
 
 }, { timestamps: true });
 

@@ -1,6 +1,5 @@
 import { type BaseSchema } from "../common/dto/base.dto";
 
-
 export interface Ifees {
     type: string;
     amount: number;
@@ -20,4 +19,5 @@ export interface ICourse extends BaseSchema {
     name: string;
     duration: number;
     fees: IfeeStructure;
+    isDeleted: boolean;
 }

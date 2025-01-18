@@ -6,7 +6,7 @@ export const createCourse = async (data: ICourse) => {
   return result;
 };
 
-export const updateCourse = async (id: string, data: ICourse) => {
+export const updateCourse = async (id: string, data: Partial<ICourse>) => {
   const result = await CourseSchema.findOneAndUpdate({ _id: id }, data, {
     new: true,
   });
@@ -30,10 +30,9 @@ export const getCourseById = async (id: string) => {
 
 export const getAllCourse = async (options: Record<string, any>) => {
   const result = await CourseSchema.paginate(
-    {},
+    {isDeleted: false},
    options
   );
-
   return result;
 };
 

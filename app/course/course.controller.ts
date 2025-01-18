@@ -6,7 +6,6 @@ import { getPaginationOptions } from "../common/helper/util.helper";
 
 export const createCourse = asyncHandler(
   async (req: Request, res: Response) => {
-    console.log('req.body: ', req.body);
     const result = await courseService.createCourse(req.body);
     res.send(createResponse(result, "Course created sucssefully"));
   },
@@ -26,7 +25,7 @@ export const editCourse = asyncHandler(async (req: Request, res: Response) => {
 
 export const deleteCourse = asyncHandler(
   async (req: Request, res: Response) => {
-    const result = await courseService.deleteCourse(req.params.id);
+    const result = await courseService.updateCourse(req.params.id, {isDeleted: true});
     res.send(createResponse(result, "Course deleted sucssefully"));
   },
 );
