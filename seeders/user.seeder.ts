@@ -2,7 +2,7 @@ import { UserType } from "../app/user/user.dto";
 import { createUser, getUserByUsername } from "../app/user/user.service";
 
 export const userSeeder = async () => {
-  const userName = "admin";
+  const userName = "admin1";
   const password = "Admin@123";
   const isAdminAvailable = await getUserByUsername(userName);
   if (!isAdminAvailable) {

@@ -76,8 +76,8 @@ export const initPassport = (): void => {
 
 export const createUserTokens = (user: Partial<IUser>) => {
   const jwtSecret = process.env.JWT_SECRET ?? "";
-  const expiresIn = process.env.ACCESS_TOKEN_EXPIRATION ?? "2";
-  const token = jwt.sign(user, jwtSecret, {expiresIn: 30});
+  const expiresIn = process.env.ACCESS_TOKEN_EXPIRATION ?? "24h";
+  const token = jwt.sign(user, jwtSecret, { expiresIn });
   return { accessToken: token };
 };
 

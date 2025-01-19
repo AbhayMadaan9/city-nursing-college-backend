@@ -25,7 +25,9 @@ export const editCourse = asyncHandler(async (req: Request, res: Response) => {
 
 export const deleteCourse = asyncHandler(
   async (req: Request, res: Response) => {
-    const result = await courseService.updateCourse(req.params.id, {isDeleted: true});
+    const result = await courseService.updateCourse(req.params.id, {
+      isDeleted: true,
+    });
     res.send(createResponse(result, "Course deleted sucssefully"));
   },
 );
@@ -39,7 +41,7 @@ export const getCourseById = asyncHandler(
 
 export const getAllCourse = asyncHandler(
   async (req: Request, res: Response) => {
-    const paginationOptions = getPaginationOptions(req.query)
+    const paginationOptions = getPaginationOptions(req.query);
     const result = await courseService.getAllCourse(paginationOptions);
     res.send(createResponse(result));
   },

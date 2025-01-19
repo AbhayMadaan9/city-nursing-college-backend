@@ -29,13 +29,10 @@ export const getCourseById = async (id: string) => {
 };
 
 export const getAllCourse = async (options: Record<string, any>) => {
-  const result = await CourseSchema.paginate(
-    {isDeleted: false},
-   options
-  );
+  const result = await CourseSchema.paginate({ isDeleted: false }, options);
   return result;
 };
 
 export const getCourseByName = async (name: string) => {
-  return await CourseSchema.find({name}).lean();
+  return await CourseSchema.find({ name }).lean();
 };

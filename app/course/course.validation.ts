@@ -1,16 +1,16 @@
 import { body } from "express-validator";
 import { Caste, Ifees } from "./course.dto";
-import * as courseService from "../course/course.service"
+import * as courseService from "../course/course.service";
 export const createCourse = [
   body("name")
     .notEmpty()
     .withMessage("Course name is required")
     .isString()
     .withMessage("Course name must be a string")
-    .custom(async(value)=>{
+    .custom(async (value) => {
       const isCourseExists = await courseService.getCourseByName(value);
-      if(isCourseExists.length){
-        throw new Error("Course already exists")
+      if (isCourseExists.length) {
+        throw new Error("Course already exists");
       }
     }),
   body("duration")
@@ -33,17 +33,19 @@ export const createCourse = [
       }
       fees.fees.forEach((fee: Ifees, index: number) => {
         if (!fee.type || typeof fee.type !== "string") {
-          throw new Error(`Fee at index ${index} must have a valid 'type' field`);
+          throw new Error(
+            `Fee at index ${index} must have a valid 'type' field`,
+          );
         }
         if (typeof fee.amount !== "number" || fee.amount <= 0) {
-          throw new Error(`Fee at index ${index} must have a positive 'amount' field`);
+          throw new Error(
+            `Fee at index ${index} must have a positive 'amount' field`,
+          );
         }
       });
       return true;
     }),
 ];
-
-
 
 export const updateCourse = [];
 
