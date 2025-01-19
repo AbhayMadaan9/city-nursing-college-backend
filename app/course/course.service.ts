@@ -36,3 +36,8 @@ export const getAllCourse = async (options: Record<string, any>) => {
 export const getCourseByName = async (name: string) => {
   return await CourseSchema.find({ name }).lean();
 };
+
+export const getAllCourseCount = async () => {
+  const result = await CourseSchema.count({ isDeleted: false });
+  return result;
+};

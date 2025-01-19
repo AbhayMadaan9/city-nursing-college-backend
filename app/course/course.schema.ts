@@ -14,7 +14,7 @@ const FeesSchema = new Schema<Ifees>(
 
 const FeeStructureSchema = new Schema<IfeeStructure>(
   {
-    cast: { type: String, enum: Caste, default: Caste.general, required: true }, // Type of fee
+    cast: { type: String, enum: Caste, default: Caste.bc, required: true }, // Type of fee
     fees: [FeesSchema],
   },
   { _id: false },
@@ -24,7 +24,7 @@ const CourseSchema = new Schema<ICourse>(
   {
     name: { type: "string", required: true, unique: true },
     duration: { type: "number", required: true },
-    fees: FeeStructureSchema,
+    fees: [FeeStructureSchema],
     isDeleted: { type: "boolean", default: false },
   },
   { timestamps: true },

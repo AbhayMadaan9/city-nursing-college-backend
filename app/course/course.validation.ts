@@ -1,5 +1,5 @@
 import { body } from "express-validator";
-import { Caste, Ifees } from "./course.dto";
+import { Caste, Ifees, IfeeStructure } from "./course.dto";
 import * as courseService from "../course/course.service";
 export const createCourse = [
   body("name")
@@ -19,30 +19,52 @@ export const createCourse = [
     .isInt({ gt: 0 })
     .withMessage("Duration must be a positive integer"),
   body("fees")
-    .isObject()
-    .withMessage("Fees must be an object")
-    .custom((fees) => {
-      if (!fees.cast) {
-        throw new Error("Fees object must contain a 'cast' field");
-      }
-      if (!Object.values(Caste).includes(fees.cast)) {
-        throw new Error(`Invalid cast value in fees object: ${fees.cast}`);
-      }
-      if (!Array.isArray(fees.fees) || fees.fees.length === 0) {
-        throw new Error("Fees object must contain a non-empty 'fees' array");
-      }
-      fees.fees.forEach((fee: Ifees, index: number) => {
-        if (!fee.type || typeof fee.type !== "string") {
+    .isArray({ min: 1 })
+    .withMessage("Fees must be a non-empty array")
+    .custom((fees: IfeeStructure[]) => {
+      const castSet = new Set();
+
+      fees.forEach((feeStructure: IfeeStructure, index: number) => {
+        if (
+          !feeStructure.cast ||
+          !Object.values(Caste).includes(feeStructure.cast)
+        ) {
           throw new Error(
-            `Fee at index ${index} must have a valid 'type' field`,
+            `Invalid or missing 'cast' value at index ${index} in fees array`,
           );
         }
-        if (typeof fee.amount !== "number" || fee.amount <= 0) {
+
+        if (castSet.has(feeStructure.cast)) {
           throw new Error(
-            `Fee at index ${index} must have a positive 'amount' field`,
+            `Duplicate 'cast' value found in fees array at index ${index}: ${feeStructure.cast}`,
           );
         }
+
+        castSet.add(feeStructure.cast);
+
+        if (
+          !Array.isArray(feeStructure.fees) ||
+          feeStructure.fees.length === 0
+        ) {
+          throw new Error(
+            `Fees array at index ${index} must contain a non-empty 'fees' array`,
+          );
+        }
+
+        feeStructure.fees.forEach((fee: Ifees, feeIndex: number) => {
+          if (!fee.type || typeof fee.type !== "string") {
+            throw new Error(
+              `Fee at index ${feeIndex} in 'fees' array at index ${index} must have a valid 'type' field`,
+            );
+          }
+          if (typeof fee.amount !== "number" || fee.amount <= 0) {
+            throw new Error(
+              `Fee at index ${feeIndex} in 'fees' array at index ${index} must have a positive 'amount' field`,
+            );
+          }
+        });
       });
+
       return true;
     }),
 ];

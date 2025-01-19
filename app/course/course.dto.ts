@@ -5,11 +5,12 @@ export interface Ifees {
   amount: number;
 }
 export enum Caste {
-  general = "general",
-  obc = "obc",
+  // general = "general",
+  // obc = "obc",
   sc = "sc",
-  st = "st",
-  others = "others",
+  bc = "bc",
+  // st = "st",
+  // others = "others",
 }
 export interface IfeeStructure {
   cast: Caste;
@@ -18,6 +19,6 @@ export interface IfeeStructure {
 export interface ICourse extends BaseSchema {
   name: string;
   duration: number;
-  fees: IfeeStructure;
+  fees: IfeeStructure[];
   isDeleted: boolean;
 }
