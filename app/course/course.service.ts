@@ -28,15 +28,11 @@ export const getCourseById = async (id: string) => {
   return result;
 };
 
-export const getAllCourse = async (options: Record<string, any>) => {
-  const result = await CourseSchema.paginate(
-    {},
-   options
-  );
-
+export const getAllCourse = async () => {
+  const result = await CourseSchema.find();
   return result;
 };
 
 export const getCourseByName = async (name: string) => {
-  return await CourseSchema.find({name}).lean();
+  return await CourseSchema.find({ name }).lean();
 };

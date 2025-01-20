@@ -6,7 +6,7 @@ import { getPaginationOptions } from "../common/helper/util.helper";
 
 export const createCourse = asyncHandler(
   async (req: Request, res: Response) => {
-    console.log('req.body: ', req.body);
+    console.log("req.body: ", req.body);
     const result = await courseService.createCourse(req.body);
     res.send(createResponse(result, "Course created sucssefully"));
   },
@@ -40,8 +40,7 @@ export const getCourseById = asyncHandler(
 
 export const getAllCourse = asyncHandler(
   async (req: Request, res: Response) => {
-    const paginationOptions = getPaginationOptions(req.query)
-    const result = await courseService.getAllCourse(paginationOptions);
+    const result = await courseService.getAllCourse();
     res.send(createResponse(result));
   },
 );
