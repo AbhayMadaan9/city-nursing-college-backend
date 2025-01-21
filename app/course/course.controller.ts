@@ -3,6 +3,7 @@ import { createResponse } from "../common/helper/response.hepler";
 import asyncHandler from "express-async-handler";
 import { type Request, type Response } from "express";
 import { getPaginationOptions } from "../common/helper/util.helper";
+import { CourseStatus } from "./course.dto";
 
 export const createCourse = asyncHandler(
   async (req: Request, res: Response) => {
@@ -40,7 +41,8 @@ export const getCourseById = asyncHandler(
 
 export const getAllCourse = asyncHandler(
   async (req: Request, res: Response) => {
-    const result = await courseService.getAllCourse();
+    const status = req.query.status as CourseStatus;
+    const result = await courseService.getAllCourse(status);
     res.send(createResponse(result));
   },
 );

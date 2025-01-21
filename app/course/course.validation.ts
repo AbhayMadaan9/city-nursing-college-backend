@@ -1,5 +1,19 @@
-import { body } from "express-validator";
+import { body, param } from "express-validator";
 import * as courseService from "../course/course.service";
+import { CourseStatus } from "./course.dto";
+
+
+
+export const getAllCourse = [
+  param("status")
+  .optional()
+  .isString()
+  .withMessage("Status name must be a string")
+  .isIn(Object.keys(CourseStatus))
+  .withMessage(`Status must be one of the following: ${Object.values(CourseStatus).join(", ")}`),
+
+];
+
 export const createCourse = [
   body("name")
     .notEmpty()

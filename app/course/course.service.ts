@@ -1,4 +1,4 @@
-import { type ICourse } from "./course.dto";
+import { CourseStatus, type ICourse } from "./course.dto";
 import CourseSchema from "./course.schema";
 
 export const createCourse = async (data: ICourse) => {
@@ -28,10 +28,17 @@ export const getCourseById = async (id: string) => {
   return result;
 };
 
-export const getAllCourse = async () => {
-  const result = await CourseSchema.find();
+export const getAllCourse = async (status?: CourseStatus) => {
+  const query: Record<string, string> = {};  
+  
+  if (status) {
+    query.status = status;
+  }
+
+  const result = await CourseSchema.find(query);
   return result;
 };
+
 
 export const getCourseByName = async (name: string) => {
   return await CourseSchema.find({ name }).lean();
