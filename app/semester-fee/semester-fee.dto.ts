@@ -1,15 +1,23 @@
+import { Types } from "mongoose";
+import { type BaseSchema } from "../common/dto/base.dto";
 
-        import { type BaseSchema } from "../common/dto/base.dto";
-        
-        export enum Caste {
-          general = "general",
-          obc = "obc",
-          sc = "sc",
-          st = "st",
-          others = "others",
-        }
+export enum Caste {
+  GENERAL = "general",
+  SC = "sc",
+}
 
-        export interface IsemesterFee extends BaseSchema {
-            
-        }
-    
+export interface FeeDetail {
+  caste: Caste;
+  amount: number;
+}
+
+export interface IFee {
+  type: string;
+  details: FeeDetail[];
+}
+
+export interface IsemesterFee extends BaseSchema {
+   semesterNumber: number;
+  fees: IFee[];
+  course: Types.ObjectId;
+}

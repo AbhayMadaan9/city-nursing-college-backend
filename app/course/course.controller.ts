@@ -7,7 +7,6 @@ import { CourseStatus } from "./course.dto";
 
 export const createCourse = asyncHandler(
   async (req: Request, res: Response) => {
-    console.log("req.body: ", req.body);
     const result = await courseService.createCourse(req.body);
     res.send(createResponse(result, "Course created sucssefully"));
   },

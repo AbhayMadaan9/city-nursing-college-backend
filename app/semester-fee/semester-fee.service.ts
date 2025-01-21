@@ -1,5 +1,6 @@
 
-            import {type IsemesterFee} from "./semester-fee.dto";
+            import { Types } from "mongoose";
+import {type IsemesterFee} from "./semester-fee.dto";
             import semesterFeeSchema from "./semester-fee.schema";
 
             export const createsemesterFee = async (data: IsemesterFee) => {
@@ -29,7 +30,12 @@
                 return result;
             };
 
-            export const getAllsemesterFee = async () => {
-                const result = await semesterFeeSchema.find({}).lean();
+            export const getAllsemesterFee = async (courseId?: string) => {
+                const query: Record<string, string | Types.ObjectId > = {};
+                if(courseId)
+                {
+                    query.course = new Types.ObjectId(courseId);
+                }
+                const result = await semesterFeeSchema.find(query).lean();
                 return result;
             };

@@ -11,7 +11,7 @@ const CourseSchema = new Schema<ICourse>(
     duration: { type: Number, required: true },
     semesters: {
       type: [Schema.Types.ObjectId],
-      ref: "semesterFee",
+      ref: "SemesterFee",
       default: [],
     },
     status: { type: String, enum: Object.values(CourseStatus), default: CourseStatus.PENDING },
