@@ -33,9 +33,10 @@ export const getAllCourse = async (status?: CourseStatus) => {
   
   if (status) {
     query.status = status;
+    
   }
 
-  const result = await CourseSchema.find(query);
+  const result = await CourseSchema.find(query).sort({createdAt: -1});
   return result;
 };
 
