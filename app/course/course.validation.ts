@@ -6,11 +6,11 @@ import { CourseStatus } from "./course.dto";
 
 export const getAllCourse = [
   param("status")
-  .optional()
-  .isString()
-  .withMessage("Status name must be a string")
-  .isIn(Object.keys(CourseStatus))
-  .withMessage(`Status must be one of the following: ${Object.values(CourseStatus).join(", ")}`),
+    .optional()
+    .isString()
+    .withMessage("Status name must be a string")
+    .isIn(Object.keys(CourseStatus))
+    .withMessage(`Status must be one of the following: ${Object.values(CourseStatus).join(", ")}`),
 
 ];
 
@@ -42,13 +42,7 @@ export const updateCourse = [
     .notEmpty()
     .withMessage("Course name is required")
     .isString()
-    .withMessage("Course name must be a string")
-    .custom(async (value) => {
-      const isCourseExists = await courseService.getCourseByName(value);
-      if (isCourseExists.length) {
-        throw new Error("Course already exists");
-      }
-    }),
+    .withMessage("Course name must be a string"),
   body("description")
     .optional()
     .isString()
@@ -62,21 +56,15 @@ export const updateCourse = [
 
 export const editCourse = [
   body("name")
-  .optional()
-  .isString()
-  .withMessage("Course name must be a string")
-  .custom(async (value) => {
-    const isCourseExists = await courseService.getCourseByName(value);
-    if (isCourseExists.length) {
-      throw new Error("Course already exists");
-    }
-  }),
-body("description")
-  .optional()
-  .isString()
-  .withMessage("Description must be a string"),
-body("duration")
-  .optional()
-  .isInt({ gt: 0 })
-  .withMessage("Duration must be a positive integer"),
+    .optional()
+    .isString()
+    .withMessage("Course name must be a string"),
+  body("description")
+    .optional()
+    .isString()
+    .withMessage("Description must be a string"),
+  body("duration")
+    .optional()
+    .isInt({ gt: 0 })
+    .withMessage("Duration must be a positive integer"),
 ];
