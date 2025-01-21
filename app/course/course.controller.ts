@@ -15,13 +15,29 @@ export const createCourse = asyncHandler(
 
 export const updateCourse = asyncHandler(
   async (req: Request, res: Response) => {
-    const result = await courseService.updateCourse(req.params.id, req.body);
+    const course = await courseService.getCourseById(req.params.id);
+    if (!course) {
+      throw new Error("Course not found")
+    }
+    const updateBody = req.body;
+    if (updateBody.duration != course.duration) {
+      updateBody.status = CourseStatus.PENDING;
+    }
+    const result = await courseService.updateCourse(req.params.id, updateBody);
     res.send(createResponse(result, "Course updated sucssefully"));
   },
 );
 
 export const editCourse = asyncHandler(async (req: Request, res: Response) => {
-  const result = await courseService.editCourse(req.params.id, req.body);
+  const course = await courseService.getCourseById(req.params.id);
+  if (!course) {
+    throw new Error("Course not found")
+  }
+  const editBody = req.body;
+  if (editBody.duration && editBody.duration != course.duration) {
+    editBody.status = CourseStatus.PENDING;
+  }
+  const result = await courseService.editCourse(req.params.id, editBody);
   res.send(createResponse(result, "Course updated sucssefully"));
 });
 
