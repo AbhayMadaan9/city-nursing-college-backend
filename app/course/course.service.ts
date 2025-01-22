@@ -15,7 +15,9 @@ export const updateCourse = async (id: string, data: ICourse) => {
 };
 
 export const editCourse = async (id: string, data: Partial<ICourse>) => {
-  const result = await CourseSchema.findOneAndUpdate({ _id: id }, data);
+  const result = await CourseSchema.findOneAndUpdate({ _id: id }, data, {
+    new: true
+  });
   return result;
 };
 
@@ -33,14 +35,31 @@ export const getCourseByIdWithSemesters = async (id: string) => {
   return result;
 };
 
-export const getAllCourse = async (status?: CourseStatus) => {
+export const getAllCourse = async (status?: CourseStatus, isPopulateSemsters?: boolean) => {
   const query: Record<string, string> = {};
 
   if (status) {
     query.status = status;
   }
 
-  const result = await CourseSchema.find(query).sort({ createdAt: -1 });
+  let queryBuilder = CourseSchema.find(query).sort({ createdAt: -1 });
+
+  if (isPopulateSemsters) {
+    queryBuilder = queryBuilder.populate("semesters");
+  }
+
+  const result = await queryBuilder;
+  return result;
+};
+
+export const getAllCourseWithSemesters = async (status?: CourseStatus) => {
+  const query: Record<string, string> = {};
+
+  if (status) {
+    query.status = status;
+  }
+
+  const result = await CourseSchema.find(query).populate<{semesters: IsemesterFee[]}>("semesters").sort({ createdAt: -1 });
   return result;
 };
 

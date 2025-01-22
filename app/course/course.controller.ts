@@ -57,7 +57,8 @@ export const getCourseById = asyncHandler(
 export const getAllCourse = asyncHandler(
   async (req: Request, res: Response) => {
     const status = req.query.status as CourseStatus;
-    const result = await courseService.getAllCourse(status);
+    const isPopulateSemsters = Boolean(parseInt(req.query.isPopulateSemsters as string))
+    const result = await courseService.getAllCourse(status, isPopulateSemsters);
     res.send(createResponse(result));
   },
 );
