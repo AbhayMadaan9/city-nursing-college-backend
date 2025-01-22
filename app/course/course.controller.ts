@@ -3,10 +3,10 @@ import { createResponse } from "../common/helper/response.hepler";
 import asyncHandler from "express-async-handler";
 import { type Request, type Response } from "express";
 import { getPaginationOptions } from "../common/helper/util.helper";
+import { CourseStatus } from "./course.dto";
 
 export const createCourse = asyncHandler(
   async (req: Request, res: Response) => {
-    console.log('req.body: ', req.body);
     const result = await courseService.createCourse(req.body);
     res.send(createResponse(result, "Course created sucssefully"));
   },
@@ -14,13 +14,29 @@ export const createCourse = asyncHandler(
 
 export const updateCourse = asyncHandler(
   async (req: Request, res: Response) => {
-    const result = await courseService.updateCourse(req.params.id, req.body);
+    const course = await courseService.getCourseById(req.params.id);
+    if (!course) {
+      throw new Error("Course not found")
+    }
+    const updateBody = req.body;
+    if (updateBody.duration != course.duration) {
+      updateBody.status = CourseStatus.PENDING;
+    }
+    const result = await courseService.updateCourse(req.params.id, updateBody);
     res.send(createResponse(result, "Course updated sucssefully"));
   },
 );
 
 export const editCourse = asyncHandler(async (req: Request, res: Response) => {
-  const result = await courseService.editCourse(req.params.id, req.body);
+  const course = await courseService.getCourseById(req.params.id);
+  if (!course) {
+    throw new Error("Course not found")
+  }
+  const editBody = req.body;
+  if (editBody.duration && editBody.duration != course.duration) {
+    editBody.status = CourseStatus.PENDING;
+  }
+  const result = await courseService.editCourse(req.params.id, editBody);
   res.send(createResponse(result, "Course updated sucssefully"));
 });
 
@@ -40,8 +56,8 @@ export const getCourseById = asyncHandler(
 
 export const getAllCourse = asyncHandler(
   async (req: Request, res: Response) => {
-    const paginationOptions = getPaginationOptions(req.query)
-    const result = await courseService.getAllCourse(paginationOptions);
+    const status = req.query.status as CourseStatus;
+    const result = await courseService.getAllCourse(status);
     res.send(createResponse(result));
   },
 );

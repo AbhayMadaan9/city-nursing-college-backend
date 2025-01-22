@@ -7,7 +7,7 @@ import { getDocuments } from "../common/validation/common.validation";
 const router = Router();
 
 router
-  .get("/", getDocuments, catchError, courseController.getAllCourse)
+  .get("/", getDocuments, courseValidator.getAllCourse, catchError, courseController.getAllCourse)
   .get("/:id", courseController.getCourseById)
   .delete("/:id", courseController.deleteCourse)
   .post(

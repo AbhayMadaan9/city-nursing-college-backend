@@ -2,7 +2,7 @@ import express, { type Express, type Request, type Response } from "express";
 import bodyParser from "body-parser";
 import morgan from "morgan";
 import http from "http";
-
+import cors from "cors"
 import { initDB } from "./app/common/services/database.service";
 import { initPassport } from "./app/common/services/passport-jwt.service";
 import { loadConfig } from "./app/common/helper/config.hepler";
@@ -15,7 +15,7 @@ loadConfig();
 
 declare global {
   namespace Express {
-    interface User extends Omit<IUser, "password"> {}
+    interface User extends Omit<IUser, "password"> { }
     interface Request {
       user?: User;
     }
@@ -23,14 +23,22 @@ declare global {
 }
 
 const port = Number(process.env.PORT) ?? 5000;
-
+const allowedOrigins = [process.env.FE_BASE_URL]
 const app: Express = express();
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(express.json());
 app.use(morgan("dev"));
-
+app.use(cors({
+  origin: function (origin, callback) {
+    if (allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true)
+    } else {
+      callback(new Error('Not allowed by CORS'))
+    }
+  }
+}))
 const initApp = async (): Promise<void> => {
   // init mongodb
   await initDB();
