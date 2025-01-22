@@ -51,8 +51,6 @@ export const validateSemesterFeeRequest = async (req: Request) => {
 
 
 export const createsemesterFee = asyncHandler(async (req: Request, res: Response) => {
-  const { course } = req.body;
-
   // Validate the request
   const { course: validatedCourse } = await validateSemesterFeeRequest(req);
 

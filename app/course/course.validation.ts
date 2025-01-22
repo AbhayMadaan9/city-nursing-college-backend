@@ -1,4 +1,4 @@
-import { body, param } from "express-validator";
+import { body, check, param } from "express-validator";
 import * as courseService from "../course/course.service";
 import { CourseStatus } from "./course.dto";
 
@@ -47,6 +47,14 @@ export const getAllCourse = [
     .isIn(Object.keys(CourseStatus))
     .withMessage(
       `Status must be one of the following: ${Object.values(CourseStatus).join(", ")}`,
+    ),
+    check("IsPopulateSemsters")
+    .optional()
+    .isString()
+    .withMessage("Status name must be a string")
+    .isIn(["0", "1"])
+    .withMessage(
+      `Status must be either 0 or 1`,
     ),
 ];
 
