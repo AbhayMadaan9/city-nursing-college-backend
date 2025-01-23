@@ -19,8 +19,10 @@ export const updateCourse = asyncHandler(
       throw new Error("Course not found")
     }
     const updateBody = req.body;
-    if (updateBody.duration != course.duration) {
+    if (updateBody.duration != course.semesters.length) {
       updateBody.status = CourseStatus.PENDING;
+    } else {
+      updateBody.status = CourseStatus.COMPLETED;
     }
     const result = await courseService.updateCourse(req.params.id, updateBody);
     res.send(createResponse(result, "Course updated sucssefully"));
@@ -33,9 +35,14 @@ export const editCourse = asyncHandler(async (req: Request, res: Response) => {
     throw new Error("Course not found")
   }
   const editBody = req.body;
-  if (editBody.duration && editBody.duration != course.duration) {
-    editBody.status = CourseStatus.PENDING;
+  if (editBody.duration) {
+    if (editBody.duration != course.semesters.length) {
+      editBody.status = CourseStatus.PENDING;
+    } else {
+      editBody.status = CourseStatus.COMPLETED;
+    }
   }
+
   const result = await courseService.editCourse(req.params.id, editBody);
   res.send(createResponse(result, "Course updated sucssefully"));
 });
