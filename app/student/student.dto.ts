@@ -2,9 +2,14 @@ import { Types } from "mongoose";
 import { type BaseSchema } from "../common/dto/base.dto";
 import { Caste } from "../semester-fee/semester-fee.dto";
 
+export interface ISession {
+  from: number;
+  to: number;
+}
 export interface IStudent extends BaseSchema {
   serialNumber: string;
   registrationNumber: string;
+  session: ISession;
   name: string;
   motherName: string;
   fatherName: string;

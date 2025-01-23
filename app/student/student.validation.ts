@@ -87,8 +87,24 @@ export const createStudent = [
   body("dob")
     .notEmpty()
     .withMessage("Date of birth is required")
-    .isDate()
+    .isString()
     .withMessage("Date of birth must be a valid date"),
+    body("session")
+    .notEmpty()
+    .withMessage("Session is required")
+    .custom((session)=>{
+      const from = session?.from;
+      const to = session?.to;
+      if( typeof from !== "number" || typeof to !== "number")
+      {
+        throw new Error("Session must be a valid object with from and to properties");
+      }
+      if(from > to)
+      {
+        throw new Error("Session from date must be before to date");
+      }
+      return true;
+    })
 ];
 
 export const updateStudent = [];

@@ -42,6 +42,12 @@ export const getStudentById = asyncHandler(
     res.send(createResponse(result));
   },
 );
+export const getStudentByRegisterNumber = asyncHandler(
+  async (req: Request, res: Response) => {
+    const result = await studentService.getStudentByRegistrationNumber(req.params.id);
+    res.send(createResponse(result));
+  },
+);
 
 export const getAllStudent = asyncHandler(
   async (req: Request, res: Response) => {
