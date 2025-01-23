@@ -1,8 +1,8 @@
 import * as courseService from "./course.service";
+import * as studentService from "../student/student.service";
 import { createResponse } from "../common/helper/response.hepler";
 import asyncHandler from "express-async-handler";
 import { type Request, type Response } from "express";
-import { getPaginationOptions } from "../common/helper/util.helper";
 import { CourseStatus } from "./course.dto";
 
 export const createCourse = asyncHandler(
@@ -42,6 +42,10 @@ export const editCourse = asyncHandler(async (req: Request, res: Response) => {
 
 export const deleteCourse = asyncHandler(
   async (req: Request, res: Response) => {
+    const enrolledStudentsCount = await studentService.getCourseStudentCount(req.params.id);
+    if(enrolledStudentsCount > 0) {
+      throw new Error("Cannot delete course with enrolled students")
+    }
     const result = await courseService.deleteCourse(req.params.id);
     res.send(createResponse(result, "Course deleted sucssefully"));
   },
