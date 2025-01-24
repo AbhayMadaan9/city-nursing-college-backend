@@ -33,10 +33,7 @@ export const getStudentById = async (id: string) => {
   return result;
 };
 
-export const getStudentBySerialNumber = async (serialNumber: string) => {
-  const result = await StudentSchema.findOne({ serialNumber }).lean();
-  return result;
-};
+
 
 export const getStudentByRegistrationNumber = async (
   registrationNumber: string,
