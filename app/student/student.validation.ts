@@ -77,18 +77,23 @@ export const createStudent =
     body("dob")
       .notEmpty()
       .withMessage("Date of birth is required")
-      .isDate()
+      .isISO8601()
       .withMessage("Date of birth must be a valid date"),
     body("registrationDate")
       .notEmpty()
       .withMessage("Registration Date is required")
-      .isDate()
+      .isISO8601()
       .withMessage("Registration Date must be a valid date"),
     body("session")
       .notEmpty()
       .withMessage("Session is required")
       .isNumeric()
       .withMessage("Session must be a valid number"),
+    body("feesDiscount")
+      .notEmpty()
+      .withMessage("Fees Discount is required")
+      .isNumeric()
+      .withMessage("Fees Discount must be a valid number"),
   ];
 
 export const updateStudent =
@@ -146,18 +151,23 @@ export const updateStudent =
     body("dob")
       .notEmpty()
       .withMessage("Date of birth is required")
-      .isDate()
+      .isISO8601()
       .withMessage("Date of birth must be a valid date"),
     body("registrationDate")
       .notEmpty()
       .withMessage("Registration Date is required")
-      .isDate()
+      .isISO8601()
       .withMessage("Registration Date must be a valid date"),
     body("session")
       .notEmpty()
       .withMessage("Session is required")
       .isNumeric()
       .withMessage("Session must be a valid number"),
+    body("feesDiscount")
+      .notEmpty()
+      .withMessage("Fees Discount is required")
+      .isNumeric()
+      .withMessage("Fees Discount must be a valid number"),
   ];
 
 
@@ -207,15 +217,19 @@ export const editStudent =
       .withMessage("Address must be a string"),
     body("dob")
       .optional()
-      .isDate()
+      .isISO8601()
       .withMessage("Date of birth must be a valid date"),
     body("registrationDate")
       .optional()
-      .isDate()
+      .isISO8601()
       .withMessage("Registration Date must be a valid date"),
     body("session")
       .optional()
       .isNumeric()
       .withMessage("Session must be a valid number"),
+    body("feesDiscount")
+      .optional()
+      .isNumeric()
+      .withMessage("Fees Discount must be a valid number"),
   ];
 
