@@ -8,11 +8,9 @@ import { type Request, type Response } from 'express'
 
 export const createStudentFee = asyncHandler(async (req: Request, res: Response) => {
     const student = await studentService.getStudentByIdWithCourseAndItsSemesters(req.body.student);
-    console.log('student: ', student?.course);
     if (!student) {
         throw new Error("Student not found");
     }
-    console.log('req.body.semester: ', req.body.semester);
     if (!student.course.semesters.find(semester => semester._id.toString() === req.body.semester)) {
         throw new Error("Semester not found in student course");
     }
@@ -63,9 +61,7 @@ export const getStudentFeeById = asyncHandler(async (req: Request, res: Response
 });
 export const getLatestStudentFee = asyncHandler(async (req: Request, res: Response) => {
     const student = req.query.student as string;
-    console.log('student: ', student);
     const semester = req.query.semester as string;
-    console.log('semester: ', semester);
     const result = await studentFeeService.getLatestStudentFeeBySemester(semester, student);
     res.send(createResponse(result))
 });

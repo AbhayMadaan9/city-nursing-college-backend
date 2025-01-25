@@ -35,24 +35,21 @@ export const getStudentById = async (id: string) => {
 };
 
 export const getStudentByIdWithCourseAndItsSemesters = async (id: string) => {
- try {
+
   const result = await StudentSchema.findById(id)
-  .populate<{
-    course: Omit<ICourse, "semesters"> & { semesters: IsemesterFee[] };
-  }>({
-    path: "course",
-    model: "course",
-    populate: {
-      path: "semesters",
-      model: "SemesterFee",
-    },
-  })
-  .lean();
-return result;
- } catch (error) {
-  console.log('error: ', error);
-  
- }
+    .populate<{
+      course: Omit<ICourse, "semesters"> & { semesters: IsemesterFee[] };
+    }>({
+      path: "course",
+      model: "course",
+      populate: {
+        path: "semesters",
+        model: "SemesterFee",
+      },
+    })
+    .lean();
+  return result;
+
 };
 
 

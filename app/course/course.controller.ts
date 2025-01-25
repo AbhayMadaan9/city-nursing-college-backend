@@ -60,7 +60,7 @@ export const deleteCourse = asyncHandler(
 
 export const getCourseById = asyncHandler(
   async (req: Request, res: Response) => {
-    const result = await courseService.getCourseById(req.params.id);
+    const result = await courseService.getCourseByIdWithSemesters(req.params.id);
     res.send(createResponse(result));
   },
 );

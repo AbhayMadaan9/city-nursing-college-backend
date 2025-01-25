@@ -53,7 +53,6 @@ export const getStudentFee = [
     .isMongoId()
     .withMessage("Student ID must be a valid MongoDB ID")
     .custom(async (value) => {
-      console.log('value: ', value);
       const isStudentExists = await studentService.getStudentById(value);
       if (!isStudentExists) {
         throw new Error("Student does not exist");
