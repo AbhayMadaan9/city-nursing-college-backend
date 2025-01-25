@@ -4,7 +4,7 @@ import bcrypt from "bcrypt";
 
 const Schema = mongoose.Schema;
 
-const hashPassword = async (password: string) => {
+export const hashPassword = async (password: string) => {
   const hash = await bcrypt.hash(password, 12);
   return hash;
 };

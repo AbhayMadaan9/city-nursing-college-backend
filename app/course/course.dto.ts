@@ -1,10 +1,9 @@
 import { Types } from "mongoose";
 import { type BaseSchema } from "../common/dto/base.dto";
 
-
 export enum CourseStatus {
   PENDING = "PENDING",
-  COMPLETED =  "COMPLETED"
+  COMPLETED = "COMPLETED",
 }
 export interface ICourse extends BaseSchema {
   name: string;

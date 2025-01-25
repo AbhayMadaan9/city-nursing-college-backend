@@ -5,5 +5,5 @@ export const getDocuments = [
   check("limit").optional().isNumeric().withMessage("Limit must be a number"),
 ];
 export const getDocument = [
-  param("id").exists().isNumeric().withMessage("Id must be a number"),
+  param("id").exists().isMongoId().withMessage("Id must be a number"),
 ];

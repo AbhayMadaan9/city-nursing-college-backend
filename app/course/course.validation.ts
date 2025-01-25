@@ -48,14 +48,12 @@ export const getAllCourse = [
     .withMessage(
       `Status must be one of the following: ${Object.values(CourseStatus).join(", ")}`,
     ),
-    check("IsPopulateSemsters")
+  check("IsPopulateSemsters")
     .optional()
     .isString()
     .withMessage("Status name must be a string")
     .isIn(["0", "1"])
-    .withMessage(
-      `Status must be either 0 or 1`,
-    ),
+    .withMessage(`Status must be either 0 or 1`),
 ];
 
 export const createCourse = [
