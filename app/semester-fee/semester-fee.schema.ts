@@ -43,15 +43,12 @@ const SemesterFeeSchema = new Schema<IsemesterFee>(
       required: true,
     },
     course: {
-          type: Schema.Types.ObjectId,
-          ref: "Course",
-          required: true,
-        },
+      type: Schema.Types.ObjectId,
+      ref: "Course",
+      required: true,
+    },
   },
   { timestamps: true },
 );
 
-export default mongoose.model<IsemesterFee>(
-  "SemesterFee",
-  SemesterFeeSchema,
-);
+export default mongoose.model<IsemesterFee>("SemesterFee", SemesterFeeSchema);

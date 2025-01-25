@@ -17,7 +17,7 @@ export interface IFee {
 }
 
 export interface IsemesterFee extends BaseSchema {
-   semesterNumber: number;
+  semesterNumber: number;
   fees: IFee[];
   course: Types.ObjectId;
 }

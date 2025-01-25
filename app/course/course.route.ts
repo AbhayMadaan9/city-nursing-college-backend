@@ -6,7 +6,12 @@ import * as courseValidator from "./course.validation";
 const router = Router();
 
 router
-  .get("/", courseValidator.getAllCourse, catchError, courseController.getAllCourse)
+  .get(
+    "/",
+    courseValidator.getAllCourse,
+    catchError,
+    courseController.getAllCourse,
+  )
   .get("/:id", courseController.getCourseById)
   .delete("/:id", courseController.deleteCourse)
   .post(

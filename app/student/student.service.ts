@@ -1,4 +1,5 @@
-import { Caste } from "../semester-fee/semester-fee.dto";
+import { ICourse } from "../course/course.dto";
+import { Caste, IsemesterFee } from "../semester-fee/semester-fee.dto";
 import { type IStudent } from "./student.dto";
 import StudentSchema from "./student.schema";
 import moment from "moment";
@@ -32,6 +33,28 @@ export const getStudentById = async (id: string) => {
   const result = await StudentSchema.findById(id).lean();
   return result;
 };
+
+export const getStudentByIdWithCourseAndItsSemesters = async (id: string) => {
+ try {
+  const result = await StudentSchema.findById(id)
+  .populate<{
+    course: Omit<ICourse, "semesters"> & { semesters: IsemesterFee[] };
+  }>({
+    path: "course",
+    model: "course",
+    populate: {
+      path: "semesters",
+      model: "SemesterFee",
+    },
+  })
+  .lean();
+return result;
+ } catch (error) {
+  console.log('error: ', error);
+  
+ }
+};
+
 
 
 

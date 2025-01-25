@@ -14,12 +14,13 @@ const CourseSchema = new Schema<ICourse>(
       ref: "SemesterFee",
       default: [],
     },
-    status: { type: String, enum: Object.values(CourseStatus), default: CourseStatus.PENDING },
+    status: {
+      type: String,
+      enum: Object.values(CourseStatus),
+      default: CourseStatus.PENDING,
+    },
   },
   { timestamps: true },
 );
 
-export default mongoose.model<ICourse>(
-  "course",
-  CourseSchema,
-);
+export default mongoose.model<ICourse>("course", CourseSchema);

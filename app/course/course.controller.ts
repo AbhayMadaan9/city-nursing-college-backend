@@ -16,7 +16,7 @@ export const updateCourse = asyncHandler(
   async (req: Request, res: Response) => {
     const course = await courseService.getCourseById(req.params.id);
     if (!course) {
-      throw new Error("Course not found")
+      throw new Error("Course not found");
     }
     const updateBody = req.body;
     if (updateBody.duration != course.semesters.length) {
@@ -32,7 +32,7 @@ export const updateCourse = asyncHandler(
 export const editCourse = asyncHandler(async (req: Request, res: Response) => {
   const course = await courseService.getCourseById(req.params.id);
   if (!course) {
-    throw new Error("Course not found")
+    throw new Error("Course not found");
   }
   const editBody = req.body;
   if (editBody.duration) {
@@ -68,7 +68,9 @@ export const getCourseById = asyncHandler(
 export const getAllCourse = asyncHandler(
   async (req: Request, res: Response) => {
     const status = req.query.status as CourseStatus;
-    const isPopulateSemsters = Boolean(parseInt(req.query.isPopulateSemsters as string))
+    const isPopulateSemsters = Boolean(
+      parseInt(req.query.isPopulateSemsters as string),
+    );
     const result = await courseService.getAllCourse(status, isPopulateSemsters);
     res.send(createResponse(result));
   },
