@@ -110,3 +110,8 @@ export const getCourseFeesByCategory = async (courseId: string, studentCategory:
 
   return totalCost;
 };
+
+export const getAllCourseCount = async () => {
+  const result = await CourseSchema.count({});
+  return result;
+};
