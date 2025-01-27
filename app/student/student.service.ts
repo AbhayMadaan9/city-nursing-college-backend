@@ -30,13 +30,12 @@ export const deleteStudent = async (id: string) => {
 };
 
 export const getStudentById = async (id: string) => {
-  const result = await StudentSchema.findById(id).lean();
+  const result = await StudentSchema.findOne({ _id: id, isDeleted: false }).lean();
   return result;
 };
 
 export const getStudentByIdWithCourseAndItsSemesters = async (id: string) => {
-
-  const result = await StudentSchema.findById(id)
+  const result = await StudentSchema.findOne({ _id: id, isDeleted: false })
     .populate<{
       course: Omit<ICourse, "semesters"> & { semesters: IsemesterFee[] };
     }>({
@@ -49,7 +48,6 @@ export const getStudentByIdWithCourseAndItsSemesters = async (id: string) => {
     })
     .lean();
   return result;
-
 };
 
 
@@ -58,11 +56,23 @@ export const getStudentByIdWithCourseAndItsSemesters = async (id: string) => {
 export const getStudentByRegistrationNumber = async (
   registrationNumber: string,
 ) => {
-  const result = await StudentSchema.findOne({ registrationNumber }).lean();
-  return result;
+
+  const result = await StudentSchema.findOne({ registrationNumber, isDeleted: false })
+    .populate<{
+      course: Omit<ICourse, "semesters"> & { semesters: IsemesterFee[] };
+    }>({
+      path: "course",
+      model: "course",
+      populate: {
+        path: "semesters",
+        model: "SemesterFee",
+      },
+    })
+    .lean();
+  return result
 };
 export const getStudentByAadharNumber = async (aadharNumber: string) => {
-  const result = await StudentSchema.findOne({ aadharNo: aadharNumber }).lean();
+  const result = await StudentSchema.findOne({ aadharNo: aadharNumber, isDeleted: false }).lean();
   return result;
 };
 
@@ -75,7 +85,7 @@ export const getAllStudent = async (options: Record<string, any>) => {
 };
 
 export const getAllStudentCount = async () => {
-  const result = await StudentSchema.count({ isDeleted: false });
+  const result = await StudentSchema.count({});
   return result;
 };
 
@@ -101,33 +111,66 @@ export const getStudentCountsCategoryWise = async () => {
   return result.length > 0 ? result[0] : { sc: 0, general: 0 };
 };
 
-export const getCurrentMonthStudentFeesCount = async () => {
-  const startOfMonth = moment().startOf("month").toDate();
-  const endOfMonth = moment().endOf("month").toDate();
-  const result = await StudentSchema.aggregate([
-    {
-      $match: {
-        isDeleted: false,
-        date: { $gte: startOfMonth, $lte: endOfMonth },
-      },
-    },
-    {
-      $group: {
-        _id: null,
-        amount: { $sum: "$netFees" },
-      },
-    },
-    {
-      $project: {
-        _id: 0,
-        amount: 1,
-      },
-    },
-  ]);
-
-  return result.length > 0 ? result[0].amount : 0;
-};
 export const getCourseStudentCount = async (courseId: string) => {
   const result = await StudentSchema.count({ course: courseId, isDeleted: false });
   return result;
 };
+
+export const getYearlyData = async () => {
+  const startOfYear = moment().startOf("year").toDate();
+  const endOfYear = moment().endOf("year").toDate();
+  return await StudentSchema.aggregate([
+    {
+      $match: {
+        createdAt: { $gte: startOfYear, $lte: endOfYear },
+      },
+    },
+    {
+      $group: {
+        _id: { $month: "$createdAt" },
+        studentCount: { $sum: 1 },
+      },
+    },
+    {
+      $sort: { "_id": 1 }, // Sort by month
+    },
+    {
+      $project: {
+        name: { $concat: [{ $toString: "$_id" }, " Month"] }, // Format for chart
+        studentCount: 1,
+        _id: 0,
+      },
+    },
+  ]);
+
+}
+
+export const getMonthlyData = async () => {
+  const startOfMonth = moment().startOf("month").toDate();
+  const endOfMonth = moment().endOf("month").toDate();
+  return await StudentSchema.aggregate([
+    {
+      $match: {
+        createdAt: { $gte: startOfMonth, $lte: endOfMonth },
+      },
+    },
+    {
+      $group: {
+        _id: { $dayOfMonth: "$createdAt" },
+        studentCount: { $sum: 1 },
+      },
+    },
+    {
+      $sort: { "_id": 1 }, // Sort by day of the month
+    },
+    {
+      $project: {
+        name: { $concat: ["Day ", { $toString: "$_id" }] }, // Format for chart
+        studentCount: 1,
+        _id: 0,
+      },
+    },
+  ]);
+
+
+}

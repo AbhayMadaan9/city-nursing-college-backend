@@ -12,6 +12,7 @@ export interface IStudentFee extends BaseSchema {
         student: Types.ObjectId;
         semester: Types.ObjectId;
         totalFees: number;
+        totalDiscount: number;
         balanceFees: number;
         paidAmount: number;
         modeOfPayment: PaymentMode;
