@@ -41,7 +41,7 @@ export const getAllsemesterFee = async (courseId?: string) => {
   return result;
 };
 
-export const getTotalFeesByCaste = async (course: string, caste: Caste): Promise<number> => {
+export const getTotalSemesterFeesByCaste = async (course: string, caste: Caste, semesterNumber: number): Promise<number> => {
   if (!Object.values(Caste).includes(caste)) {
     throw new Error(`Invalid caste value. Must be one of: ${Object.values(Caste).join(", ")}`);
   }
@@ -52,7 +52,7 @@ export const getTotalFeesByCaste = async (course: string, caste: Caste): Promise
     // Unwind the details array to handle each caste-specific fee detail
     { $unwind: "$fees.details" },
     // Match the desired caste
-    { $match: { "fees.details.caste": caste, course: new Types.ObjectId(course) } },
+    { $match: { "fees.details.caste": caste, course: new Types.ObjectId(course), semesterNumber } },
     // Group by null to calculate the total sum of all amounts for the caste
     {
       $group: {

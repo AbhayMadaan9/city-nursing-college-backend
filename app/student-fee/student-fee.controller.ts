@@ -14,7 +14,11 @@ export const createStudentFee = asyncHandler(async (req: Request, res: Response)
     if (!student.course.semesters.find(semester => semester._id.toString() === req.body.semester)) {
         throw new Error("Semester not found in student course");
     }
-    const semesterFee = await semesterFeeService.getTotalFeesByCaste(student.course._id, student.category);
+    const  semesterDetails = await semesterFeeService.getsemesterFeeById(req.body.semester);
+    if (!semesterDetails) {
+        throw new Error("Semester fee not found");
+    }
+    const semesterFee = await semesterFeeService.getTotalSemesterFeesByCaste(student.course._id, student.category, semesterDetails.semesterNumber);
     const discountedSemesterFee = semesterFee - (student.feesDiscount / student.course.duration);
     req.body.totalDiscount = student.feesDiscount / student.course.duration;
     req.body.totalFees = discountedSemesterFee;
