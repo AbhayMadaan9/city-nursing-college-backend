@@ -124,6 +124,11 @@ export const editsemesterFee = asyncHandler(
 
 export const deletesemesterFee = asyncHandler(
   async (req: Request, res: Response) => {
+    const { existingSemester } = await validateSemesterFeeRequest(req);
+
+    if (!existingSemester) {
+      throw new Error("Semester fee not found");
+    }
     const result = await semesterFeeService.deletesemesterFee(req.params.id);
     res.send(createResponse(result, "semesterFee deleted sucssefully"));
   },

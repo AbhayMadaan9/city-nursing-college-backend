@@ -79,7 +79,16 @@ export const getStudentByAadharNumber = async (aadharNumber: string) => {
 export const getAllStudent = async (options: Record<string, any>) => {
   const result = await StudentSchema.paginate(
     { isDeleted: false },
-    { ...options, populate: "course" },
+    {
+      ...options, populate: {
+        path: "course",
+        model: "course",
+        populate: {
+          path: "semesters",
+          model: "SemesterFee",
+        },
+      }
+    },
   );
   return result;
 };
