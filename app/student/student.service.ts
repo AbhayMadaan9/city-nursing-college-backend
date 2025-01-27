@@ -30,12 +30,12 @@ export const deleteStudent = async (id: string) => {
 };
 
 export const getStudentById = async (id: string) => {
-  const result = await StudentSchema.findOne({_id: id, isDeleted: false}).lean();
+  const result = await StudentSchema.findOne({ _id: id, isDeleted: false }).lean();
   return result;
 };
 
 export const getStudentByIdWithCourseAndItsSemesters = async (id: string) => {
-  const result = await StudentSchema.findOne({_id: id, isDeleted: false})
+  const result = await StudentSchema.findOne({ _id: id, isDeleted: false })
     .populate<{
       course: Omit<ICourse, "semesters"> & { semesters: IsemesterFee[] };
     }>({
@@ -56,8 +56,20 @@ export const getStudentByIdWithCourseAndItsSemesters = async (id: string) => {
 export const getStudentByRegistrationNumber = async (
   registrationNumber: string,
 ) => {
-  const result = await StudentSchema.findOne({ registrationNumber, isDeleted: false }).lean();
-  return result;
+
+  const result = await StudentSchema.findOne({ registrationNumber, isDeleted: false })
+    .populate<{
+      course: Omit<ICourse, "semesters"> & { semesters: IsemesterFee[] };
+    }>({
+      path: "course",
+      model: "course",
+      populate: {
+        path: "semesters",
+        model: "SemesterFee",
+      },
+    })
+    .lean();
+  return result
 };
 export const getStudentByAadharNumber = async (aadharNumber: string) => {
   const result = await StudentSchema.findOne({ aadharNo: aadharNumber, isDeleted: false }).lean();
@@ -107,7 +119,7 @@ export const getCourseStudentCount = async (courseId: string) => {
 export const getYearlyData = async () => {
   const startOfYear = moment().startOf("year").toDate();
   const endOfYear = moment().endOf("year").toDate();
- return await StudentSchema.aggregate([
+  return await StudentSchema.aggregate([
     {
       $match: {
         createdAt: { $gte: startOfYear, $lte: endOfYear },
@@ -133,32 +145,32 @@ export const getYearlyData = async () => {
 
 }
 
-export const getMonthlyData= async () => {
+export const getMonthlyData = async () => {
   const startOfMonth = moment().startOf("month").toDate();
   const endOfMonth = moment().endOf("month").toDate();
- return await StudentSchema.aggregate([
-  {
-    $match: {
-      createdAt: { $gte: startOfMonth, $lte: endOfMonth },
+  return await StudentSchema.aggregate([
+    {
+      $match: {
+        createdAt: { $gte: startOfMonth, $lte: endOfMonth },
+      },
     },
-  },
-  {
-    $group: {
-      _id: { $dayOfMonth: "$createdAt" },
-      studentCount: { $sum: 1 },
+    {
+      $group: {
+        _id: { $dayOfMonth: "$createdAt" },
+        studentCount: { $sum: 1 },
+      },
     },
-  },
-  {
-    $sort: { "_id": 1 }, // Sort by day of the month
-  },
-  {
-    $project: {
-      name: { $concat: ["Day ", { $toString: "$_id" }] }, // Format for chart
-      studentCount: 1,
-      _id: 0,
+    {
+      $sort: { "_id": 1 }, // Sort by day of the month
     },
-  },
-]);
+    {
+      $project: {
+        name: { $concat: ["Day ", { $toString: "$_id" }] }, // Format for chart
+        studentCount: 1,
+        _id: 0,
+      },
+    },
+  ]);
 
 
 }

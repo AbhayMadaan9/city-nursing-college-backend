@@ -19,6 +19,10 @@ const StudentFeeSchema = new Schema<IStudentFee>({
                 type: Number,
                 required: true,
         },
+        totalDiscount: {
+                type: Number,
+                required: true,
+        },
         balanceFees: {
                 type: Number,
                 required: true,

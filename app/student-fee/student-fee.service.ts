@@ -33,6 +33,7 @@ export const getStudentFeeById = async (id: string) => {
     return result;
 };
 export const getLatestStudentFeeBySemester = async (semester: string, student: string) => {
+  
     const result = await StudentFeeSchema.findOne({semester, student}).sort({createdAt: -1}).lean();
     return result;
 };
