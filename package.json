@@ -10,8 +10,7 @@
     "lint": "eslint . --ext .ts,.js --max-warnings=0",
     "lint:fix": "eslint --fix --ext .js,.ts .",
     "format": "prettier . -w",
-    "format:check": "prettier . --check",
-    "postinstall": "husky install"
+    "format:check": "prettier . --check"
   },
   "lint-staged": {
     "**/*.{js,ts}": [
