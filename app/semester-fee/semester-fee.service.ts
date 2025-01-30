@@ -23,7 +23,7 @@ export const editsemesterFee = async (
 };
 
 export const deletesemesterFee = async (id: string) => {
-  const result = await semesterFeeSchema.deleteOne({ _id: id });
+  const result = await semesterFeeSchema.deleteOne({ _id: id }, {new: true});
   return result;
 };
 

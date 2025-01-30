@@ -115,3 +115,11 @@ export const getAllCourseCount = async () => {
   const result = await CourseSchema.count({});
   return result;
 };
+
+export const removeCourseSemester = async (courseId: string, semesterId:string) => {
+ return await CourseSchema.findByIdAndUpdate(
+    courseId,
+    { $pull: { semesters: semesterId }, status: CourseStatus.PENDING },
+    { new: true }
+  );
+}

@@ -15,11 +15,12 @@ export const validateSemesterFeeRequestOperation = async (req: Request) => {
   if (!existingSemester) {
     throw new Error("Semester fee not found")
   }
+
   const enrolledStudentsCount = await studentService.getCourseStudentCount(existingSemester.course.toString());
   if (enrolledStudentsCount > 0) {
     throw new Error("This semester Course have enrolled students")
   }
-  return true;
+  return existingSemester;
 };
 
 export const createsemesterFee = asyncHandler(
@@ -114,6 +115,7 @@ export const deletesemesterFee = asyncHandler(
     }
 
     const result = await semesterFeeService.deletesemesterFee(req.params.id);
+    await courseService.removeCourseSemester(isValidOperation.course.toString(), isValidOperation._id)
     res.send(createResponse(result, "semesterFee deleted sucssefully"));
   },
 );
