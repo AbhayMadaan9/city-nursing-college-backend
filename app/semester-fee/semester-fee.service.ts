@@ -69,3 +69,7 @@ export const getTotalSemesterFeesByCaste = async (course: string, caste: Caste, 
   // Return the total fees, defaulting to 0 if no matching fees are found
   return result.length > 0 ? result[0].totalFees : 0;
 };
+
+export const deleteAllCourseSemesters = async (courseId:string) => {
+  await semesterFeeSchema.deleteMany({course:courseId})
+}

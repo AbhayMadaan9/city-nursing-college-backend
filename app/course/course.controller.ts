@@ -1,5 +1,6 @@
 import * as courseService from "./course.service";
 import * as studentService from "../student/student.service";
+import * as semesterService from "../semester-fee/semester-fee.service"
 import { createResponse } from "../common/helper/response.hepler";
 import asyncHandler from "express-async-handler";
 import { type Request, type Response } from "express";
@@ -62,6 +63,7 @@ export const deleteCourse = asyncHandler(
       throw new Error("Cannot delete course with enrolled students")
     }
     const result = await courseService.deleteCourse(req.params.id);
+    await semesterService.deleteAllCourseSemesters(req.params.id)
     res.send(createResponse(result, "Course deleted sucssefully"));
   },
 );
