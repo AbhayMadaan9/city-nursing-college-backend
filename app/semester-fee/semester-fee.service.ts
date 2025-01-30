@@ -1,6 +1,7 @@
 import { Types } from "mongoose";
 import { Caste, type IsemesterFee } from "./semester-fee.dto";
 import semesterFeeSchema from "./semester-fee.schema";
+import { ICourse } from "../course/course.dto";
 
 export const createsemesterFee = async (data: IsemesterFee) => {
   const result = await semesterFeeSchema.create({ ...data, active: true });
@@ -37,7 +38,7 @@ export const getAllsemesterFee = async (courseId?: string) => {
   if (courseId) {
     query.course = new Types.ObjectId(courseId);
   }
-  const result = await semesterFeeSchema.find(query).lean();
+  const result = await semesterFeeSchema.find(query).populate<{course: ICourse}>("course").lean();
   return result;
 };
 
