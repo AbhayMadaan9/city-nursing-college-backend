@@ -24,7 +24,7 @@ export const editsemesterFee = async (
 };
 
 export const deletesemesterFee = async (id: string) => {
-  const result = await semesterFeeSchema.deleteOne({ _id: id }, {new: true});
+  const result = await semesterFeeSchema.deleteOne({ _id: id }, { new: true });
   return result;
 };
 
@@ -38,7 +38,7 @@ export const getAllsemesterFee = async (courseId?: string) => {
   if (courseId) {
     query.course = new Types.ObjectId(courseId);
   }
-  const result = await semesterFeeSchema.find(query).populate<{course: ICourse}>({
+  const result = await semesterFeeSchema.find(query).populate<{ course: ICourse }>({
     path: "course",
     model: "course"
   }).lean();
@@ -69,7 +69,20 @@ export const getTotalSemesterFeesByCaste = async (course: string, caste: Caste, 
   // Return the total fees, defaulting to 0 if no matching fees are found
   return result.length > 0 ? result[0].totalFees : 0;
 };
+export const getTotalSemesterFeesByCasteFromSemester = (caste: Caste, semester: IsemesterFee): number => {
+  let totalFees = 0;
+  semester?.fees?.forEach((fee) => {
+    fee.details?.forEach((detail) => {
+      if (detail.caste === caste) {
+        totalFees += totalFees + detail.amount;
+      }
+    });
+  });
 
-export const deleteAllCourseSemesters = async (courseId:string) => {
-  await semesterFeeSchema.deleteMany({course:courseId})
+  return totalFees;
+
+};
+
+export const deleteAllCourseSemesters = async (courseId: string) => {
+  await semesterFeeSchema.deleteMany({ course: courseId })
 }

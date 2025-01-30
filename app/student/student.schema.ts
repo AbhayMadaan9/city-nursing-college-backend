@@ -14,7 +14,6 @@ const StudentSchema = new Schema<IStudent>(
     fatherName: { type: String, required: true },
     course: { type: Schema.Types.ObjectId, ref: "course", required: true },
     feesDiscount: { type: Number, required: true },
-    netFees: { type: Number, required: true },
     dob: { type: Date, required: true },
     registrationDate: { type: Date, required: true },
     aadharNo: { type: String, required: true, unique: true },

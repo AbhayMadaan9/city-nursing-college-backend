@@ -19,8 +19,9 @@ export const createStudentFee = asyncHandler(async (req: Request, res: Response)
         throw new Error("Semester fee not found");
     }
     const semesterFee = await semesterFeeService.getTotalSemesterFeesByCaste(student.course._id, student.category, semesterDetails.semesterNumber);
-    const discountedSemesterFee = semesterFee - (student.feesDiscount / student.course.duration);
-    req.body.totalDiscount = student.feesDiscount / student.course.duration;
+    const discount = Math.floor(student.feesDiscount / student.course.duration);
+    const discountedSemesterFee = semesterFee - discount;
+    req.body.totalDiscount = discount;
     req.body.totalFees = discountedSemesterFee;
     if (req.body.balanceFees > discountedSemesterFee) {
         throw new Error("Balance fees should not be more than semester fee");
@@ -73,6 +74,8 @@ export const getLatestStudentFee = asyncHandler(async (req: Request, res: Respon
 
 
 export const getAllStudentFee = asyncHandler(async (req: Request, res: Response) => {
-    const result = await studentFeeService.getAllStudentFee();
+    const haveBalanceFees = req.query.haveBalanceFees;
+    const student = req.query.student;
+    const result = await studentFeeService.getAllStudentFee({haveBalanceFees: !!haveBalanceFees, student: student?.toString()});
     res.send(createResponse(result))
 });
