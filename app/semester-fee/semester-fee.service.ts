@@ -38,7 +38,10 @@ export const getAllsemesterFee = async (courseId?: string) => {
   if (courseId) {
     query.course = new Types.ObjectId(courseId);
   }
-  const result = await semesterFeeSchema.find(query).populate<{course: ICourse}>("course").lean();
+  const result = await semesterFeeSchema.find(query).populate<{course: ICourse}>({
+    path: "course",
+    model: "course"
+  }).lean();
   return result;
 };
 
