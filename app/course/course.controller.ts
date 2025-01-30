@@ -14,6 +14,10 @@ export const createCourse = asyncHandler(
 
 export const updateCourse = asyncHandler(
   async (req: Request, res: Response) => {
+    const enrolledStudentsCount = await studentService.getCourseStudentCount(req.params.id);
+    if (enrolledStudentsCount > 0) {
+      throw new Error("This semester Course have enrolled students")
+    }
     const course = await courseService.getCourseById(req.params.id);
     if (!course) {
       throw new Error("Course not found");
@@ -30,6 +34,10 @@ export const updateCourse = asyncHandler(
 );
 
 export const editCourse = asyncHandler(async (req: Request, res: Response) => {
+  const enrolledStudentsCount = await studentService.getCourseStudentCount(req.params.id);
+  if (enrolledStudentsCount > 0) {
+    throw new Error("This semester Course have enrolled students")
+  }
   const course = await courseService.getCourseById(req.params.id);
   if (!course) {
     throw new Error("Course not found");
@@ -50,7 +58,7 @@ export const editCourse = asyncHandler(async (req: Request, res: Response) => {
 export const deleteCourse = asyncHandler(
   async (req: Request, res: Response) => {
     const enrolledStudentsCount = await studentService.getCourseStudentCount(req.params.id);
-    if(enrolledStudentsCount > 0) {
+    if (enrolledStudentsCount > 0) {
       throw new Error("Cannot delete course with enrolled students")
     }
     const result = await courseService.deleteCourse(req.params.id);
