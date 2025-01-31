@@ -6,7 +6,7 @@
     "start": "nodemon --exec cross-env NODE_ENV=local ts-node ./index.ts",
     "dev": "node ./dist/index.js",
     "prod": "node ./dist/index.js",
-    "build": "tsc",
+    "build": "npx tsc",
     "lint": "eslint . --ext .ts,.js --max-warnings=0",
     "lint:fix": "eslint --fix --ext .js,.ts .",
     "format": "prettier . -w",
