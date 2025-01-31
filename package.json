@@ -3,9 +3,9 @@
   "private": true,
   "scripts": {
     "local": "nodemon",
-    "start": "nodemon --exec cross-env NODE_ENV=local ts-node ./index.ts",
+    "start": "NODE_ENV=local HOST=0.0.0.0 ts-node ./index.ts",
     "dev": "node ./dist/index.js",
-    "prod": "node ./dist/index.js",
+    "produc": "node ./dist/index.js",
     "build": "npx tsc",
     "lint": "eslint . --ext .ts,.js --max-warnings=0",
     "lint:fix": "eslint --fix --ext .js,.ts .",
