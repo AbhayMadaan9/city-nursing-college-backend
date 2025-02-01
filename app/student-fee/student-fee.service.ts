@@ -102,6 +102,11 @@ export const getAllStudentFee = async ({ student, haveBalanceFees }: { student?:
       $match: matchQuery, // Apply filters here
     },
     {
+      $sort: {
+        createdAt: -1
+      }
+    },
+    {
       $lookup: {
         from: "courses", // Ensure this matches the actual collection name
         localField: "student.course",
