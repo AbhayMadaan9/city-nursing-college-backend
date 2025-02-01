@@ -74,8 +74,8 @@ export const getLatestStudentFee = asyncHandler(async (req: Request, res: Respon
 
 
 export const getAllStudentFee = asyncHandler(async (req: Request, res: Response) => {
-    const haveBalanceFees = req.query.haveBalanceFees;
+    const haveBalanceFees = req.query.haveBalanceFees
     const student = req.query.student;
-    const result = await studentFeeService.getAllStudentFee({haveBalanceFees: !!haveBalanceFees, student: student?.toString()});
+    const result = await studentFeeService.getAllStudentFee({haveBalanceFees: haveBalanceFees?.toString() === "true", student: student?.toString()});
     res.send(createResponse(result))
 });

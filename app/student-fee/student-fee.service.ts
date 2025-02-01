@@ -69,17 +69,49 @@ export const getTotalAmountPaidByStudentForSemester = async (semester: string, s
   return result.length > 0 ? result[0].totalPaid : 0;
 };
 export const getAllStudentFee = async ({ student, haveBalanceFees }: { student?: string; haveBalanceFees?: boolean }) => {
-  const query: Record<string, any> = {};
+  const matchQuery: Record<string, any> = {};
 
   if (student) {
-    query.student = student;
+    matchQuery["student.registrationNumber"] = student;
   }
 
   if (haveBalanceFees) {
-    query.balanceFees = { $gt: 0 }; // Only fetch records where balanceFees is greater than 0
+    matchQuery["balanceFees"] = { $gt: 0 }; // Only fetch records where balanceFees is greater than 0
   }
 
-  const result = await StudentFeeSchema.find(query).lean();
+  const result = await StudentFeeSchema.aggregate([
+    {
+      $lookup: {
+        from: "semesterfees", // Ensure this matches the actual collection name
+        localField: "semester",
+        foreignField: "_id",
+        as: "semester",
+      },
+    },
+    { $unwind: "$semester" },
+    {
+      $lookup: {
+        from: "students", // Ensure this matches the actual collection name
+        localField: "student",
+        foreignField: "_id",
+        as: "student",
+      },
+    },
+    { $unwind: "$student" },
+    {
+      $match: matchQuery, // Apply filters here
+    },
+    {
+      $lookup: {
+        from: "courses", // Ensure this matches the actual collection name
+        localField: "student.course",
+        foreignField: "_id",
+        as: "student.course",
+      },
+    },
+    { $unwind: "$student.course" },
+  ]);
+
   return result;
 };
 
