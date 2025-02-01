@@ -18,25 +18,34 @@ export const createStudent = asyncHandler(async (req: Request, res: Response) =>
     throw new Error("Discount amount is greater than course fees");
   }
 
-  // Create the student
-  const student = await studentService.createStudent(req.body);
-
   // Fetch the course with semesters
   const course = await courseService.getCourseByIdWithSemesters(courseId);
   if (!course) {
     throw new Error("Course not found");
   }
 
-  const discountPerSemester = Math.floor(feesDiscount / course.duration);
+  const semesterCount = course.semesters.length;
+  if (semesterCount === 0) {
+    throw new Error("Course does not have any semesters");
+  }
+
+  const discountPerSemester = Math.floor(feesDiscount / semesterCount);
+
+  // Validate that each semester's fee is greater than the per-semester discount
+  for (const semester of course.semesters) {
+    const totalFees = semesterFeeService.getTotalSemesterFeesByCasteFromSemester(category, semester);
+    if (discountPerSemester > totalFees) {
+      throw new Error(`Discount amount (${discountPerSemester}) is greater than semester ${semester.semesterNumber} fees (${totalFees})`);
+    }
+  }
+
+  // Create the student only after successful validation
+  const student = await studentService.createStudent(req.body);
 
   // Process all semesters concurrently
   await Promise.all(
-    course.semesters.map(async (semester) => {
+    course.semesters.map(async (semester, index) => {
       const totalFees = semesterFeeService.getTotalSemesterFeesByCasteFromSemester(category, semester);
-      if (feesDiscount > totalFees) {
-        throw new Error("Discount amount is greater than semester fees");
-      }
-
       const finalTotalFees = totalFees - discountPerSemester;
 
       await feeService.createStudentFee({
@@ -54,6 +63,7 @@ export const createStudent = asyncHandler(async (req: Request, res: Response) =>
 
   res.send(createResponse(student, "Student created successfully"));
 });
+
 
 
 export const updateStudent = asyncHandler(

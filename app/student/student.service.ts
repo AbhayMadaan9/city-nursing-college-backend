@@ -71,6 +71,13 @@ export const getStudentByRegistrationNumber = async (
     .lean();
   return result
 };
+export const getAnyStudentByRegistrationNumber = async (
+  registrationNumber: string,
+) => {
+
+  const result = await StudentSchema.findOne({ registrationNumber}).lean();
+  return result
+};
 export const getStudentByAadharNumber = async (aadharNumber: string) => {
   const result = await StudentSchema.findOne({ aadharNo: aadharNumber, isDeleted: false }).lean();
   return result;

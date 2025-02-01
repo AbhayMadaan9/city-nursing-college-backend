@@ -33,7 +33,7 @@ export const createStudent =
       .withMessage("Registration Number must be a string")
       .custom(async (value) => {
         const student =
-          await studentService.getStudentByRegistrationNumber(value);
+        await studentService.getAnyStudentByRegistrationNumber(value);
         if (student) {
           throw new Error(
             `Student with ${value} registration number already exists`,
