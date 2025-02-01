@@ -21,7 +21,14 @@ declare global {
     }
   }
 }
-
+const checkApi = ()=>fetch("https://city-nursing-college-backend.onrender.com/").then(res=>{
+  console.log("Apis are working")
+}).catch(err=>{
+  console.error("Apis are not working")
+})
+setInterval(() => {
+  checkApi();
+}, 30000);
 const port = Number(process.env.PORT) ?? 5000;
 const allowedOrigins = [process.env.FE_BASE_URL]
 const app: Express = express();
