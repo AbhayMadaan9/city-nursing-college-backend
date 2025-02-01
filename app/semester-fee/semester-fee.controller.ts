@@ -1,48 +1,44 @@
 import * as semesterFeeService from "./semester-fee.service";
 import * as courseService from "../course/course.service";
+import * as studentService from "../student/student.service";
 import { createResponse } from "../common/helper/response.hepler";
 import asyncHandler from "express-async-handler";
 import { type Request, type Response } from "express";
 import { CourseStatus } from "../course/course.dto";
 import { Types } from "mongoose";
 
-export const validateSemesterFeeRequest = async (req: Request) => {
+export const validateSemesterFeeRequestOperation = async (req: Request) => {
   const { id: semesterId } = req.params;
-  const { course: courseId, semesterNumber } = req.body;
-
-  // If semesterId exists, fetch the semester
   const existingSemester = semesterId
     ? await semesterFeeService.getsemesterFeeById(semesterId)
     : null;
-
-  // Determine the courseId from the existingSemester or request body
-  const associatedCourseId = existingSemester?.course || courseId;
-
-  // Fetch the course with semesters
-
-  const course = await courseService.getCourseByIdWithSemesters(
-    associatedCourseId as string,
-  );
-  if (!course) {
-    throw new Error("Associated course not found");
+  if (!existingSemester) {
+    throw new Error("Semester fee not found")
   }
 
-  // Check semester number
-  const semesterNumberForComp = existingSemester
-    ? existingSemester.semesterNumber
-    : semesterNumber;
-  if (course.duration < semesterNumberForComp) {
-    throw new Error(
-      `Semester number ${semesterNumberForComp} exceeds the course duration of ${course.duration}`,
+  const enrolledStudentsCount = await studentService.getCourseStudentCount(existingSemester.course.toString());
+  if (enrolledStudentsCount > 0) {
+    throw new Error("This semester Course have enrolled students")
+  }
+  return existingSemester;
+};
+
+export const createsemesterFee = asyncHandler(
+  async (req: Request, res: Response) => {
+    // Validate the request
+    const { course: courseId, semesterNumber } = req.body;
+    const course = await courseService.getCourseByIdWithSemesters(
+      courseId as string,
     );
-  }
-  // Check course status
-  if (course.status === CourseStatus.COMPLETED) {
-    throw new Error("Course has already been completed. Operation not allowed");
-  }
+    if (!course) {
+      throw new Error("Associated course not found");
+    }
 
-  // Check if semesterNumber already exists for the course
-  if (semesterNumber) {
+    if (course.duration < semesterNumber) {
+      throw new Error(
+        `Semester number ${semesterNumber} exceeds the course duration of ${course.duration}`,
+      );
+    }
     const isSemesterExists = course.semesters.some(
       (semester) => semester.semesterNumber === semesterNumber,
     );
@@ -51,23 +47,13 @@ export const validateSemesterFeeRequest = async (req: Request) => {
         `Semester ${semesterNumber} already exists for course ${course.name}`,
       );
     }
-  }
-
-  return { course, existingSemester };
-};
-
-export const createsemesterFee = asyncHandler(
-  async (req: Request, res: Response) => {
-    // Validate the request
-    const { course: validatedCourse } = await validateSemesterFeeRequest(req);
-
     // Create the new semester fee
     const newSemesterFee = await semesterFeeService.createsemesterFee(req.body);
 
     // Update the course with the new semesters list
-    validatedCourse.semesters.push(newSemesterFee);
-    const updatedCourse = await courseService.editCourse(validatedCourse._id, {
-      semesters: validatedCourse.semesters.map(
+    course.semesters.push(newSemesterFee);
+    const updatedCourse = await courseService.editCourse(course._id, {
+      semesters: course.semesters.map(
         (semester) => new Types.ObjectId(semester._id),
       ),
     });
@@ -75,8 +61,8 @@ export const createsemesterFee = asyncHandler(
       throw new Error("Failed to update course");
     }
     // Check and update course status if needed
-    if (updatedCourse.semesters.length === validatedCourse.duration) {
-      await courseService.editCourse(validatedCourse._id, {
+    if (updatedCourse.semesters.length === course.duration) {
+      await courseService.editCourse(course._id, {
         status: CourseStatus.COMPLETED,
       });
     }
@@ -89,14 +75,13 @@ export const createsemesterFee = asyncHandler(
 
 export const updatesemesterFee = asyncHandler(
   async (req: Request, res: Response) => {
-    const { existingSemester } = await validateSemesterFeeRequest(req);
-
-    // Perform the update
-    if (!existingSemester) {
-      throw new Error("Semester fee not found");
+    const isValidOperation = await validateSemesterFeeRequestOperation(req);
+    if (!isValidOperation) {
+      throw new Error("Cannot update semester fee")
     }
+
     const result = await semesterFeeService.updatesemesterFee(
-      existingSemester._id,
+      req.params.id,
       req.body,
     );
 
@@ -106,15 +91,15 @@ export const updatesemesterFee = asyncHandler(
 
 export const editsemesterFee = asyncHandler(
   async (req: Request, res: Response) => {
-    const { existingSemester } = await validateSemesterFeeRequest(req);
-
-    if (!existingSemester) {
-      throw new Error("Semester fee not found");
+    const isValidOperation = await validateSemesterFeeRequestOperation(req);
+    if (!isValidOperation) {
+      throw new Error("Cannot edit semester fee")
     }
+
 
     // Perform the edit
     const result = await semesterFeeService.editsemesterFee(
-      existingSemester._id,
+      req.params.id,
       req.body,
     );
 
@@ -124,12 +109,13 @@ export const editsemesterFee = asyncHandler(
 
 export const deletesemesterFee = asyncHandler(
   async (req: Request, res: Response) => {
-    const { existingSemester } = await validateSemesterFeeRequest(req);
-
-    if (!existingSemester) {
-      throw new Error("Semester fee not found");
+    const isValidOperation = await validateSemesterFeeRequestOperation(req);
+    if (!isValidOperation) {
+      throw new Error("Cannot delete semester fee")
     }
+
     const result = await semesterFeeService.deletesemesterFee(req.params.id);
+    await courseService.removeCourseSemester(isValidOperation.course.toString(), isValidOperation._id)
     res.send(createResponse(result, "semesterFee deleted sucssefully"));
   },
 );

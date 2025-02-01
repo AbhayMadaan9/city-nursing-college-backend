@@ -32,6 +32,7 @@ export const getCourseById = async (id: string) => {
   const result = await CourseSchema.findById(id).lean();
   return result;
 };
+
 export const getCourseByIdWithSemesters = async (id: string) => {
   const result = await CourseSchema.findById(id)
     .populate<{ semesters: IsemesterFee[] }>("semesters")
@@ -115,3 +116,11 @@ export const getAllCourseCount = async () => {
   const result = await CourseSchema.count({});
   return result;
 };
+
+export const removeCourseSemester = async (courseId: string, semesterId:string) => {
+ return await CourseSchema.findByIdAndUpdate(
+    courseId,
+    { $pull: { semesters: semesterId }, status: CourseStatus.PENDING },
+    { new: true }
+  );
+}
