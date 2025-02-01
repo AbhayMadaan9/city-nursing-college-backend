@@ -51,7 +51,7 @@ export const getStudentFee = [
     .exists()
     .withMessage("Student ID is required")
     .isString()
-    .withMessage("Student ID must be a valid MongoDB ID")
+    .withMessage("Student ID must be a valid registration number")
     .custom(async (value) => {
       const isStudentExists = await studentService.getStudentByRegistrationNumber(value);
       if (!isStudentExists) {
