@@ -17,5 +17,4 @@ export interface IStudent extends BaseSchema {
   contactNo: string;
   category: Caste;
   isDeleted: boolean;
-  netFees: number;
 }
