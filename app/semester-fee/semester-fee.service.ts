@@ -70,18 +70,12 @@ export const getTotalSemesterFeesByCaste = async (course: string, caste: Caste, 
   return result.length > 0 ? result[0].totalFees : 0;
 };
 export const getTotalSemesterFeesByCasteFromSemester = (caste: Caste, semester: IsemesterFee): number => {
-  let totalFees = 0;
-  semester?.fees?.forEach((fee) => {
-    fee.details?.forEach((detail) => {
-      if (detail.caste === caste) {
-        totalFees += totalFees + detail.amount;
-      }
-    });
-  });
-
-  return totalFees;
-
+  return semester?.fees?.reduce((totalFees, fee) => {
+    const feeAmount = fee.details?.reduce((sum, detail) => sum + (detail.caste === caste ? detail.amount : 0), 0);
+    return totalFees + feeAmount;
+  }, 0) || 0;
 };
+
 
 export const deleteAllCourseSemesters = async (courseId: string) => {
   await semesterFeeSchema.deleteMany({ course: courseId })
