@@ -44,6 +44,10 @@ export const createStudentFee = [
     .optional()
     .isString()
     .withMessage("Transaction ID must be a string"),
+  body("remark")
+    .optional()
+    .isString()
+    .withMessage("Remark must be a string"),
 ];
 
 export const getStudentFee = [
@@ -59,7 +63,7 @@ export const getStudentFee = [
       }
     }),
 
-    check("semester")
+  check("semester")
     .exists()
     .withMessage("Semester ID is required")
     .isMongoId()

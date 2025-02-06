@@ -18,4 +18,5 @@ export interface IStudentFee extends BaseSchema {
         modeOfPayment: PaymentMode;
         payDate: Date;
         transactionId?: string;
+        remark: string;
 }

@@ -44,6 +44,9 @@ const StudentFeeSchema = new Schema<IStudentFee>({
         transactionId: {
                 type: String,
         },
+        remark: {
+                type: String,
+        }
 }, { timestamps: true });
 
 export default mongoose.model<IStudentFee>("studentFee", StudentFeeSchema);
