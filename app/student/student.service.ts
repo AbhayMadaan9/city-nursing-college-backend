@@ -30,7 +30,10 @@ export const deleteStudent = async (id: string) => {
 };
 
 export const getStudentById = async (id: string) => {
-  const result = await StudentSchema.findOne({ _id: id, isDeleted: false }).lean();
+  const result = await StudentSchema.findOne({
+    _id: id,
+    isDeleted: false,
+  }).lean();
   return result;
 };
 
@@ -50,14 +53,13 @@ export const getStudentByIdWithCourseAndItsSemesters = async (id: string) => {
   return result;
 };
 
-
-
-
 export const getStudentByRegistrationNumber = async (
   registrationNumber: string,
 ) => {
-
-  const result = await StudentSchema.findOne({ registrationNumber, isDeleted: false })
+  const result = await StudentSchema.findOne({
+    registrationNumber,
+    isDeleted: false,
+  })
     .populate<{
       course: Omit<ICourse, "semesters"> & { semesters: IsemesterFee[] };
     }>({
@@ -69,17 +71,19 @@ export const getStudentByRegistrationNumber = async (
       },
     })
     .lean();
-  return result
+  return result;
 };
 export const getAnyStudentByRegistrationNumber = async (
   registrationNumber: string,
 ) => {
-
-  const result = await StudentSchema.findOne({ registrationNumber}).lean();
-  return result
+  const result = await StudentSchema.findOne({ registrationNumber }).lean();
+  return result;
 };
 export const getStudentByAadharNumber = async (aadharNumber: string) => {
-  const result = await StudentSchema.findOne({ aadharNo: aadharNumber, isDeleted: false }).lean();
+  const result = await StudentSchema.findOne({
+    aadharNo: aadharNumber,
+    isDeleted: false,
+  }).lean();
   return result;
 };
 
@@ -87,14 +91,15 @@ export const getAllStudent = async (options: Record<string, any>) => {
   const result = await StudentSchema.paginate(
     { isDeleted: false },
     {
-      ...options, populate: {
+      ...options,
+      populate: {
         path: "course",
         model: "course",
         populate: {
           path: "semesters",
           model: "SemesterFee",
         },
-      }
+      },
     },
   );
   return result;
@@ -112,7 +117,9 @@ export const getStudentCountsCategoryWise = async () => {
       $group: {
         _id: null,
         sc: { $sum: { $cond: [{ $eq: ["$category", Caste.SC] }, 1, 0] } },
-        general: { $sum: { $cond: [{ $eq: ["$category", Caste.GENERAL] }, 1, 0] } },
+        general: {
+          $sum: { $cond: [{ $eq: ["$category", Caste.GENERAL] }, 1, 0] },
+        },
       },
     },
     {
@@ -128,7 +135,10 @@ export const getStudentCountsCategoryWise = async () => {
 };
 
 export const getCourseStudentCount = async (courseId: string) => {
-  const result = await StudentSchema.count({ course: courseId, isDeleted: false });
+  const result = await StudentSchema.count({
+    course: courseId,
+    isDeleted: false,
+  });
   return result;
 };
 
@@ -148,7 +158,7 @@ export const getYearlyData = async () => {
       },
     },
     {
-      $sort: { "_id": 1 }, // Sort by month
+      $sort: { _id: 1 }, // Sort by month
     },
     {
       $project: {
@@ -158,8 +168,7 @@ export const getYearlyData = async () => {
       },
     },
   ]);
-
-}
+};
 
 export const getMonthlyData = async () => {
   const startOfMonth = moment().startOf("month").toDate();
@@ -177,7 +186,7 @@ export const getMonthlyData = async () => {
       },
     },
     {
-      $sort: { "_id": 1 }, // Sort by day of the month
+      $sort: { _id: 1 }, // Sort by day of the month
     },
     {
       $project: {
@@ -187,6 +196,4 @@ export const getMonthlyData = async () => {
       },
     },
   ]);
-
-
-}
+};

@@ -9,7 +9,7 @@ const router = Router();
 router
   .get("/", studentController.getAllStudent)
   .get("/:id", studentController.getStudentByRegisterNumber)
-  .delete("/:id",getDocument, catchError, studentController.deleteStudent)
+  .delete("/:id", getDocument, catchError, studentController.deleteStudent)
   .post(
     "/",
     studentValidator.createStudent,
@@ -18,7 +18,7 @@ router
   )
   .put(
     "/:id",
-    getDocument, 
+    getDocument,
     studentValidator.updateStudent,
     catchError,
     studentController.updateStudent,

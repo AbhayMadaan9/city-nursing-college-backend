@@ -1,6 +1,6 @@
 import * as courseService from "../course/course.service";
 import * as studentService from "../student/student.service";
-import * as studentFeeService from "../student-fee/student-fee.service"
+import * as studentFeeService from "../student-fee/student-fee.service";
 import moment from "moment";
 export const getDashboardCards = async () => {
   const totalCourses = await courseService.getAllCourseCount();
@@ -9,7 +9,7 @@ export const getDashboardCards = async () => {
     await studentService.getStudentCountsCategoryWise();
   const currentMonthStudentFeesAmount =
     await studentFeeService.getCurrentMonthStudentFeesCount();
-    const currentMonthStudentBalanceFeesAmount =
+  const currentMonthStudentBalanceFeesAmount =
     await studentFeeService.getCurrentMonthStudentBalanceFeesCount();
   return {
     coursesCount: totalCourses,
@@ -20,9 +20,7 @@ export const getDashboardCards = async () => {
   };
 };
 
-
 export const getDashboardGraph = async () => {
-  
   // Check if data for the current month exists
   const monthlyData = await studentService.getMonthlyData();
   if (monthlyData.length > 0) {

@@ -26,7 +26,7 @@ export const resetPasswordAuth = asyncHandler(
   async (req: Request, res: Response) => {
     const user = getLoginUser(req.user);
     const { confirmPassword } = req.body;
-    const hashedPassword = await hashPassword(confirmPassword)
+    const hashedPassword = await hashPassword(confirmPassword);
     const result = await userService.updateUser(user._id, {
       password: hashedPassword,
     });

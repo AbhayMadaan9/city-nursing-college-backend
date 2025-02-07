@@ -3,7 +3,7 @@
   "private": true,
   "scripts": {
     "local": "nodemon",
-    "start": "NODE_ENV=local HOST=0.0.0.0 ts-node ./index.ts",
+    "start": "nodemon --exec cross-env NODE_ENV=local ts-node ./index.ts",
     "dev": "node ./dist/index.js",
     "produc": "node ./dist/index.js",
     "build": "npx tsc",
