@@ -1,5 +1,7 @@
-import mongoose from "mongoose";
+import mongoose, { AggregatePaginateModel, PaginateModel } from "mongoose";
 import { PaymentMode, type IStudentFee } from "./student-fee.dto";
+import mongoosePaginate from "mongoose-paginate-v2";
+import aggregatePaginate from "mongoose-aggregate-paginate-v2";
 
 const Schema = mongoose.Schema;
 
@@ -50,5 +52,9 @@ const StudentFeeSchema = new Schema<IStudentFee>(
   },
   { timestamps: true },
 );
+StudentFeeSchema.plugin(mongoosePaginate);
+StudentFeeSchema.plugin(aggregatePaginate);
 
-export default mongoose.model<IStudentFee>("studentFee", StudentFeeSchema);
+interface IStudentFeeModel extends PaginateModel<IStudentFee>, AggregatePaginateModel<IStudentFee> {}
+
+export default mongoose.model<IStudentFee, IStudentFeeModel>("studentFee", StudentFeeSchema);

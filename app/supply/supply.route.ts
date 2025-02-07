@@ -15,17 +15,5 @@ router
     catchError,
     supplyController.createSupply,
   )
-  .put(
-    "/:id",
-    supplyValidator.updateSupply,
-    catchError,
-    supplyController.updateSupply,
-  )
-  .patch(
-    "/:id",
-    supplyValidator.editSupply,
-    catchError,
-    supplyController.editSupply,
-  );
 
 export default router;

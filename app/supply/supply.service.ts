@@ -1,3 +1,5 @@
+import { IsemesterFee } from "../semester-fee/semester-fee.dto";
+import { IStudent } from "../student/student.dto";
 import { type ISupply } from "./supply.dto";
 import SupplySchema from "./supply.schema";
 
@@ -32,3 +34,12 @@ export const getAllSupply = async () => {
   const result = await SupplySchema.find({}).lean();
   return result;
 };
+export const getAllSupplyWithPopulation = async (studentRegistrationNumber?: string) => {
+  const matchQuery: Record<string, any> = {};
+  if (studentRegistrationNumber) {
+    matchQuery.student = studentRegistrationNumber;
+  }
+  const result = await SupplySchema.find(matchQuery).populate<{student: IStudent, semester: IsemesterFee}>("student semester").lean();
+  return result;
+};
+

@@ -81,9 +81,11 @@ export const getTotalAmountPaidByStudentForSemester = async (
 export const getAllStudentFee = async ({
   student,
   haveBalanceFees,
+  paginationOptions
 }: {
   student?: string;
   haveBalanceFees?: boolean;
+  paginationOptions?: Record<string, any>;
 }) => {
   const matchQuery: Record<string, any> = {};
 
@@ -95,7 +97,7 @@ export const getAllStudentFee = async ({
     matchQuery["balanceFees"] = { $gt: 0 }; // Only fetch records where balanceFees is greater than 0
   }
 
-  const result = await StudentFeeSchema.aggregate([
+  const aggregationQuery = StudentFeeSchema.aggregate([
     {
       $lookup: {
         from: "semesterfees", // Ensure this matches the actual collection name
@@ -132,7 +134,7 @@ export const getAllStudentFee = async ({
     },
     { $unwind: "$student.course" },
   ]);
-
+  const result = await StudentFeeSchema.aggregatePaginate(aggregationQuery, paginationOptions);
   return result;
 };
 

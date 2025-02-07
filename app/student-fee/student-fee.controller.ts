@@ -4,6 +4,7 @@ import * as semesterFeeService from "../semester-fee/semester-fee.service";
 import { createResponse } from "../common/helper/response.hepler";
 import asyncHandler from "express-async-handler";
 import { type Request, type Response } from "express";
+import { getPaginationOptions } from "../common/helper/util.helper";
 
 export const createStudentFee = asyncHandler(
   async (req: Request, res: Response) => {
@@ -117,9 +118,11 @@ export const getAllStudentFee = asyncHandler(
   async (req: Request, res: Response) => {
     const haveBalanceFees = req.query.haveBalanceFees;
     const student = req.query.student;
+    const paginationOptions = getPaginationOptions(req.query);
     const result = await studentFeeService.getAllStudentFee({
       haveBalanceFees: haveBalanceFees?.toString() === "true",
       student: student?.toString(),
+      paginationOptions
     });
     res.send(createResponse(result));
   },

@@ -38,7 +38,8 @@ export const getSupplyById = asyncHandler(
 
 export const getAllSupply = asyncHandler(
   async (req: Request, res: Response) => {
-    const result = await supplyService.getAllSupply();
+    const studentRegistrationNumber = req.query?.studentRegistrationNumber ? req.query!.studentRegistrationNumber.toString() : undefined;
+    const result = await supplyService.getAllSupplyWithPopulation(studentRegistrationNumber);
     res.send(createResponse(result));
   },
 );
