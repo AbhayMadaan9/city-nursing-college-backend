@@ -1,7 +1,7 @@
 import { CourseStatus, type ICourse } from "./course.dto";
 import { IsemesterFee } from "../semester-fee/semester-fee.dto";
 import CourseSchema from "./course.schema";
-import *  as studentService from "../student/student.service"
+import * as studentService from "../student/student.service";
 import { Types } from "mongoose";
 
 export const createCourse = async (data: ICourse) => {
@@ -77,8 +77,10 @@ export const getCourseByName = async (name: string) => {
   return await CourseSchema.find({ name }).lean();
 };
 
-
-export const getCourseFeesByCategory = async (courseId: string, studentCategory: string) => {
+export const getCourseFeesByCategory = async (
+  courseId: string,
+  studentCategory: string,
+) => {
   // Use aggregation to calculate the total fees for the student's category
   const result = await CourseSchema.aggregate([
     { $match: { _id: new Types.ObjectId(courseId) } }, // Match the course by ID
@@ -117,10 +119,13 @@ export const getAllCourseCount = async () => {
   return result;
 };
 
-export const removeCourseSemester = async (courseId: string, semesterId:string) => {
- return await CourseSchema.findByIdAndUpdate(
+export const removeCourseSemester = async (
+  courseId: string,
+  semesterId: string,
+) => {
+  return await CourseSchema.findByIdAndUpdate(
     courseId,
     { $pull: { semesters: semesterId }, status: CourseStatus.PENDING },
-    { new: true }
+    { new: true },
   );
-}
+};

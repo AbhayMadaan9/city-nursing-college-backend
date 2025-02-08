@@ -1,8 +1,7 @@
-
-import { body, check } from 'express-validator';
-import { PaymentMode } from './student-fee.dto';
-import * as studentService from "../student/student.service"
-import * as semesterFeeService from "../semester-fee/semester-fee.service"
+import { body, check } from "express-validator";
+import { PaymentMode } from "./student-fee.dto";
+import * as studentService from "../student/student.service";
+import * as semesterFeeService from "../semester-fee/semester-fee.service";
 export const createStudentFee = [
   body("student")
     .exists()
@@ -32,7 +31,9 @@ export const createStudentFee = [
     .exists()
     .withMessage("Mode of payment is required")
     .isIn(Object.values(PaymentMode))
-    .withMessage(`Mode of payment must be one of the following: ${Object.values(PaymentMode).join(", ")}`),
+    .withMessage(
+      `Mode of payment must be one of the following: ${Object.values(PaymentMode).join(", ")}`,
+    ),
 
   body("payDate")
     .exists()
@@ -44,10 +45,7 @@ export const createStudentFee = [
     .optional()
     .isString()
     .withMessage("Transaction ID must be a string"),
-  body("remark")
-    .optional()
-    .isString()
-    .withMessage("Remark must be a string"),
+  body("remark").optional().isString().withMessage("Remark must be a string"),
 ];
 
 export const getStudentFee = [
@@ -57,7 +55,8 @@ export const getStudentFee = [
     .isString()
     .withMessage("Student ID must be a valid registration number")
     .custom(async (value) => {
-      const isStudentExists = await studentService.getStudentByRegistrationNumber(value);
+      const isStudentExists =
+        await studentService.getStudentByRegistrationNumber(value);
       if (!isStudentExists) {
         throw new Error("Student does not exist");
       }
@@ -69,4 +68,3 @@ export const getStudentFee = [
     .isMongoId()
     .withMessage("Semester ID must be a valid MongoDB ID"),
 ];
-

@@ -22,9 +22,9 @@ declare global {
   }
 }
 const checkApi = ()=>fetch("https://city-nursing-college-backend.onrender.com/").then(res=>{
-  console.log("Apis are working")
+  console.log("BE is working")
 }).catch(err=>{
-  console.error("Apis are not working")
+  console.error("BE is not working")
 })
 setInterval(() => {
   checkApi();
@@ -42,8 +42,7 @@ app.use(cors({
     if (allowedOrigins.indexOf(origin) !== -1) {
       callback(null, true)
     } else {
-      callback(null, true)
-      // callback(new Error('Not allowed by CORS'))
+      callback(new Error('Not allowed by CORS'))
     }
   }
 }))

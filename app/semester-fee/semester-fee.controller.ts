@@ -13,12 +13,14 @@ export const validateSemesterFeeRequestOperation = async (req: Request) => {
     ? await semesterFeeService.getsemesterFeeById(semesterId)
     : null;
   if (!existingSemester) {
-    throw new Error("Semester fee not found")
+    throw new Error("Semester fee not found");
   }
 
-  const enrolledStudentsCount = await studentService.getCourseStudentCount(existingSemester.course.toString());
+  const enrolledStudentsCount = await studentService.getCourseStudentCount(
+    existingSemester.course.toString(),
+  );
   if (enrolledStudentsCount > 0) {
-    throw new Error("This semester Course have enrolled students")
+    throw new Error("This semester Course have enrolled students");
   }
   return existingSemester;
 };
@@ -77,7 +79,7 @@ export const updatesemesterFee = asyncHandler(
   async (req: Request, res: Response) => {
     const isValidOperation = await validateSemesterFeeRequestOperation(req);
     if (!isValidOperation) {
-      throw new Error("Cannot update semester fee")
+      throw new Error("Cannot update semester fee");
     }
 
     const result = await semesterFeeService.updatesemesterFee(
@@ -93,9 +95,8 @@ export const editsemesterFee = asyncHandler(
   async (req: Request, res: Response) => {
     const isValidOperation = await validateSemesterFeeRequestOperation(req);
     if (!isValidOperation) {
-      throw new Error("Cannot edit semester fee")
+      throw new Error("Cannot edit semester fee");
     }
-
 
     // Perform the edit
     const result = await semesterFeeService.editsemesterFee(
@@ -111,11 +112,14 @@ export const deletesemesterFee = asyncHandler(
   async (req: Request, res: Response) => {
     const isValidOperation = await validateSemesterFeeRequestOperation(req);
     if (!isValidOperation) {
-      throw new Error("Cannot delete semester fee")
+      throw new Error("Cannot delete semester fee");
     }
 
     const result = await semesterFeeService.deletesemesterFee(req.params.id);
-    await courseService.removeCourseSemester(isValidOperation.course.toString(), isValidOperation._id)
+    await courseService.removeCourseSemester(
+      isValidOperation.course.toString(),
+      isValidOperation._id,
+    );
     res.send(createResponse(result, "semesterFee deleted sucssefully"));
   },
 );

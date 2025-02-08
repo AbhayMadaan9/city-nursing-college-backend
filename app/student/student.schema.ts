@@ -8,7 +8,7 @@ const Schema = mongoose.Schema;
 const StudentSchema = new Schema<IStudent>(
   {
     registrationNumber: { type: String, required: true, unique: true },
-    session: {type: Number, required: true},
+    session: { type: Number, required: true },
     name: { type: String, required: true },
     motherName: { type: String, required: true },
     fatherName: { type: String, required: true },

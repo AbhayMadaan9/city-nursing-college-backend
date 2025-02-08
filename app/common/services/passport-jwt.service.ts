@@ -48,17 +48,6 @@ export const initPassport = (): void => {
             done(createError(401, "User not found!"), false);
             return;
           }
-
-          if (!user.active) {
-            done(createError(401, "User is inactive"), false);
-            return;
-          }
-
-          // if (user.blocked) {
-          //   done(createError(401, "User is blocked, Contact to admin"), false);
-          //   return;
-          // }
-
           const validate = await isValidPassword(password, user.password);
           if (!validate) {
             done(createError(401, "Invalid userName or password"), false);
