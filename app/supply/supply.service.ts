@@ -30,13 +30,20 @@ export const getSupplyById = async (id: string) => {
   const result = await SupplySchema.findById(id).lean();
   return result;
 };
-export const getSupplyCountOfStudentSubject = async ({ student, semester, subject }: {
+export const getSupplyCountOfStudentSubject = async ({
+  student,
+  semester,
+  subject,
+}: {
   student: string;
   semester: string;
   subject: string;
 }) => {
-  const result = await SupplySchema.count({ semester, student, subject }).lean();
-  console.log('result: ', result);
+  const result = await SupplySchema.count({
+    semester,
+    student,
+    subject,
+  }).lean();
   return result;
 };
 
@@ -44,17 +51,27 @@ export const getAllSupply = async () => {
   const result = await SupplySchema.find({}).lean();
   return result;
 };
-export const getAllSupplyWithPopulation = async (studentRegistrationNumber?: string) => {
+export const getAllSupplyWithPopulation = async (
+  studentRegistrationNumber?: string
+) => {
   const matchQuery: Record<string, any> = {};
   if (studentRegistrationNumber) {
     matchQuery.student.registrationNumber = studentRegistrationNumber;
   }
   console.log(mongoose.modelNames());
   const result = await SupplySchema.find()
-    .populate({path:"student", model:"student"}) // Ensure the field matches the schema reference
-    .populate({path:"semester", model:"SemesterFee"}) 
-
+    .populate({
+      path: "student",
+      model: "student",
+      populate: {
+        path: "course",
+        populate: {
+          path: "semesters",
+        },
+      },
+    })
+    .populate({ path: "semester", model: "SemesterFee" })
+    .sort({ createdAt: "descending" })
     .lean();
   return result;
 };
-
