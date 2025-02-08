@@ -1,4 +1,4 @@
-import { body, param } from "express-validator";
+import { body, query } from "express-validator";
 
 export const createSupply = [
     body("student")
@@ -29,17 +29,17 @@ export const createSupply = [
 ];
 
 export const totalSupply = [
-    param("student")
+    query("student")
      .notEmpty()
      .withMessage("Student is required")
      .isMongoId()
      .withMessage("Student must be a valid MongoId"),
-    param("semester")
+     query("semester")
      .notEmpty()
      .withMessage("Semester is required")
      .isMongoId()
      .withMessage("Semester must be a valid MongoId"),
-    param("subject")
+     query("subject")
      .notEmpty()
      .withMessage("Subject is required")
      .isString()

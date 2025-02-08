@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import { IsemesterFee } from "../semester-fee/semester-fee.dto";
 import { IStudent } from "../student/student.dto";
 import { type ISupply } from "./supply.dto";
@@ -29,12 +30,13 @@ export const getSupplyById = async (id: string) => {
   const result = await SupplySchema.findById(id).lean();
   return result;
 };
-export const getSupplyCountOfStudentSubject = async ({student, semester, subject}: {
+export const getSupplyCountOfStudentSubject = async ({ student, semester, subject }: {
   student: string;
   semester: string;
   subject: string;
 }) => {
-  const result = await SupplySchema.count({semester, student, subject}).lean();
+  const result = await SupplySchema.count({ semester, student, subject }).lean();
+  console.log('result: ', result);
   return result;
 };
 
@@ -45,9 +47,14 @@ export const getAllSupply = async () => {
 export const getAllSupplyWithPopulation = async (studentRegistrationNumber?: string) => {
   const matchQuery: Record<string, any> = {};
   if (studentRegistrationNumber) {
-    matchQuery.student = studentRegistrationNumber;
+    matchQuery.student.registrationNumber = studentRegistrationNumber;
   }
-  const result = await SupplySchema.find(matchQuery).populate<{student: IStudent, semester: IsemesterFee}>("student semester").lean();
+  console.log(mongoose.modelNames());
+  const result = await SupplySchema.find()
+    .populate({path:"student", model:"student"}) // Ensure the field matches the schema reference
+    .populate({path:"semester", model:"SemesterFee"}) 
+
+    .lean();
   return result;
 };
 

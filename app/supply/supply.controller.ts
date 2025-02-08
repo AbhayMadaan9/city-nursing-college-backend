@@ -5,6 +5,7 @@ import { type Request, type Response } from "express";
 
 export const createSupply = asyncHandler(
   async (req: Request, res: Response) => {
+    //need check here to check if student exists and semster from request body is valid student course semster
     const result = await supplyService.createSupply(req.body);
     res.send(createResponse(result, "Supply created sucssefully"));
   },
@@ -43,7 +44,7 @@ export const getSupplyCountOfStudentSubject = asyncHandler(
     }
 
     const result = await supplyService.getSupplyCountOfStudentSubject({
-      semester: semester.toString(), subject: subject.toString(), student: student.toString()
+      semester: semester.toString(), subject: subject.toString().toLowerCase(), student: student.toString()
     });
     res.send(createResponse(result));
   },

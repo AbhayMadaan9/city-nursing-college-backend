@@ -22,9 +22,9 @@ declare global {
   }
 }
 const checkApi = ()=>fetch("https://city-nursing-college-backend.onrender.com/").then(res=>{
-  console.log("Apis are working")
+  console.log("BE is working")
 }).catch(err=>{
-  console.error("Apis are not working")
+  console.error("BE is not working")
 })
 setInterval(() => {
   checkApi();
