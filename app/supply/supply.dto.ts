@@ -6,4 +6,5 @@ export interface ISupply extends BaseSchema {
     semester: Types.ObjectId;
     subject: string;
     amount: number;
+    supplyNumber: number;
 }

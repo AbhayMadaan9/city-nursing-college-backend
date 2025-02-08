@@ -35,6 +35,19 @@ export const getSupplyById = asyncHandler(
     res.send(createResponse(result));
   },
 );
+export const getSupplyCountOfStudentSubject = asyncHandler(
+  async (req: Request, res: Response) => {
+    const { student, semester, subject } = req.query;
+    if (!student || !semester || !subject) {
+      throw new Error("Student, semester, and subject are required");
+    }
+
+    const result = await supplyService.getSupplyCountOfStudentSubject({
+      semester: semester.toString(), subject: subject.toString(), student: student.toString()
+    });
+    res.send(createResponse(result));
+  },
+);
 
 export const getAllSupply = asyncHandler(
   async (req: Request, res: Response) => {

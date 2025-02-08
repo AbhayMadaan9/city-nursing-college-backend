@@ -29,6 +29,14 @@ export const getSupplyById = async (id: string) => {
   const result = await SupplySchema.findById(id).lean();
   return result;
 };
+export const getSupplyCountOfStudentSubject = async ({student, semester, subject}: {
+  student: string;
+  semester: string;
+  subject: string;
+}) => {
+  const result = await SupplySchema.count({semester, student, subject}).lean();
+  return result;
+};
 
 export const getAllSupply = async () => {
   const result = await SupplySchema.find({}).lean();

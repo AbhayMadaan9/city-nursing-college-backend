@@ -8,7 +8,8 @@ const router = Router();
 router
   .get("/", supplyController.getAllSupply)
   .get("/:id", supplyController.getSupplyById)
-  .delete("/:id", supplyController.deleteSupply)
+  .get("/total",supplyValidator.totalSupply,catchError, supplyController.getSupplyCountOfStudentSubject)
+  // .delete("/:id", supplyController.deleteSupply)
   .post(
     "/",
     supplyValidator.createSupply,
