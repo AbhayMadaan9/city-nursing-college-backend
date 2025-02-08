@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import { type ISupply } from "./supply.dto";
+import { PaymentMode } from "../student-fee/student-fee.dto";
 
 const Schema = mongoose.Schema;
 
@@ -18,16 +19,31 @@ const SupplySchema = new Schema<ISupply>({
         type: String,
         required: true,
     },
-    amount: {
+    paidAmount: {
         type: Number,
         required: true,
+    },
+    modeOfPayment: {
+        type: String,
+        enum: Object.values(PaymentMode),
+        required: true,
+    },
+    payDate: {
+        type: Date,
+        required: true,
+    },
+    transactionId: {
+        type: String,
+    },
+    remark: {
+        type: String,
     },
 }, { timestamps: true });
 
 SupplySchema.pre("save", async function (next) {
-  if (this.subject) {
-    this.subject = this.subject.trim().toLowerCase()
-  }
-  next();
+    if (this.subject) {
+        this.subject = this.subject.trim().toLowerCase()
+    }
+    next();
 });
 export default mongoose.model<ISupply>("supply", SupplySchema);
