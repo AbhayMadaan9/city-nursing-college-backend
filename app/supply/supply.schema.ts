@@ -4,46 +4,53 @@ import { PaymentMode } from "../student-fee/student-fee.dto";
 
 const Schema = mongoose.Schema;
 
-const SupplySchema = new Schema<ISupply>({
+const SupplySchema = new Schema<ISupply>(
+  {
     student: {
-        type: Schema.Types.ObjectId,
-        ref: "Student",
-        required: true,
+      type: Schema.Types.ObjectId,
+      ref: "Student",
+      required: true,
     },
     semester: {
-        type: Schema.Types.ObjectId,
-        ref: "Semester",
-        required: true,
+      type: Schema.Types.ObjectId,
+      ref: "Semester",
+      required: true,
     },
     subject: {
-        type: String,
-        required: true,
+      type: String,
+      required: true,
+    },
+    supplyNumber: {
+      type: Number,
+      required: true,
     },
     paidAmount: {
-        type: Number,
-        required: true,
+      type: Number,
+      required: true,
     },
     modeOfPayment: {
-        type: String,
-        enum: Object.values(PaymentMode),
-        required: true,
+      type: String,
+      enum: Object.values(PaymentMode),
+      required: true,
     },
     payDate: {
-        type: Date,
-        required: true,
+      type: Date,
+      required: true,
     },
     transactionId: {
-        type: String,
+      type: String,
     },
     remark: {
-        type: String,
+      type: String,
     },
-}, { timestamps: true });
+  },
+  { timestamps: true }
+);
 
 SupplySchema.pre("save", async function (next) {
-    if (this.subject) {
-        this.subject = this.subject.trim().toLowerCase()
-    }
-    next();
+  if (this.subject) {
+    this.subject = this.subject.trim().toLowerCase();
+  }
+  next();
 });
 export default mongoose.model<ISupply>("supply", SupplySchema);
