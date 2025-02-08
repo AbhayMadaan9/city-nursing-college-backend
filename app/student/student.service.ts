@@ -87,9 +87,14 @@ export const getStudentByAadharNumber = async (aadharNumber: string) => {
   return result;
 };
 
-export const getAllStudent = async (options: Record<string, any>) => {
+export const getAllStudent = async (options: Record<string, any>, conditions:Record<string, any>) => {
+  const query: Record<string, any> = { isDeleted: false };
+const {studentRegistrationNumber} = conditions;
+  if (studentRegistrationNumber) {
+    query.registrationNumber = studentRegistrationNumber;
+  }
   const result = await StudentSchema.paginate(
-    { isDeleted: false },
+    query,
     {
       ...options,
       populate: {

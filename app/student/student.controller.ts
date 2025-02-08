@@ -116,7 +116,8 @@ export const getStudentByRegisterNumber = asyncHandler(
 export const getAllStudent = asyncHandler(
   async (req: Request, res: Response) => {
     const paginationOptions = getPaginationOptions(req.query);
-    const result = await studentService.getAllStudent(paginationOptions);
+    const studentRegistrationNumber = req.query?.studentRegistrationNumber ? req.query!.studentRegistrationNumber.toString() : undefined;
+    const result = await studentService.getAllStudent(paginationOptions, {studentRegistrationNumber});
     res.send(createResponse(result));
   },
 );
